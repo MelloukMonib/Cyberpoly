@@ -1,0 +1,2903 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CYBERPOLY — Stop au Cyberharcèlement</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-1: #131836;
+      --bg-2: #1f2656;
+      --bg-3: #0f132c;
+      --surface: rgba(255, 255, 255, 0.08);
+      --modal-bg: #1a2046;
+      --border-soft: rgba(255, 255, 255, 0.16);
+      --sky: #38bdf8;
+      --pink: #fb7185;
+      --mint: #34d399;
+      --amber: #fbbf24;
+      --danger: #f43f5e;
+      --text: #ffffff;
+      --muted: #cbd5e1;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Fredoka', 'Plus Jakarta Sans', sans-serif;
+      letter-spacing: 0.3px;
+    }
+
+    body {
+      background: linear-gradient(145deg, var(--bg-1) 0%, var(--bg-2) 50%, var(--bg-3) 100%);
+      background-attachment: fixed;
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 66px;
+      overflow-x: hidden;
+    }
+
+    .bg-shapes {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .bg-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.3;
+      animation: drift 18s ease-in-out infinite alternate;
+    }
+    .b1 { width: 420px; height: 420px; background: #38bdf8; top: -120px; left: -100px; }
+    .b2 { width: 460px; height: 460px; background: #f472b6; bottom: -140px; right: -100px; animation-delay: -6s; }
+
+    @keyframes drift {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(35px, -28px) scale(1.08); }
+    }
+
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 300;
+    }
+
+    /* ============ LOGO UNISCITÉ EN BAS À DROITE ============ */
+    .uniscite-badge {
+      position: fixed;
+      right: 16px;
+      bottom: 14px;
+      z-index: 55;
+      background: rgba(255, 255, 255, 0.96);
+      padding: 7px 14px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.38);
+      border: 1.5px solid rgba(234, 82, 24, 0.25);
+      display: flex;
+      align-items: center;
+      pointer-events: none;
+    }
+    .uniscite-badge svg {
+      height: 28px;
+      width: auto;
+      display: block;
+    }
+
+    /* ============ BOUTONS 3D TACTILES ============ */
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 999px;
+      font-weight: 800;
+      min-height: 40px;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.15s ease;
+    }
+    button:hover:not(:disabled) { filter: brightness(1.07); transform: translateY(-1px); }
+    button:active:not(:disabled) { transform: translateY(2px); }
+    button:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none !important; transform: none !important; }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #38bdf8, #0284c7);
+      color: #fff;
+      padding: 10px 20px;
+      font-size: 0.94rem;
+      box-shadow: 0 4px 0 #0369a1;
+    }
+    .btn-primary:active:not(:disabled) { box-shadow: 0 1px 0 #0369a1; }
+
+    .btn-success {
+      background: linear-gradient(180deg, #34d399, #059669);
+      color: #022c22;
+      padding: 10px 18px;
+      box-shadow: 0 4px 0 #047857;
+    }
+    .btn-success:active:not(:disabled) { box-shadow: 0 1px 0 #047857; }
+
+    .btn-warning {
+      background: linear-gradient(180deg, #fcd34d, #f59e0b);
+      color: #451a03;
+      padding: 10px 18px;
+      box-shadow: 0 4px 0 #b45309;
+    }
+    .btn-warning:active:not(:disabled) { box-shadow: 0 1px 0 #b45309; }
+
+    .btn-danger {
+      background: linear-gradient(180deg, #fb7185, #e11d48);
+      color: #fff;
+      padding: 10px 18px;
+      box-shadow: 0 4px 0 #9f1239;
+    }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      border: 1.5px solid rgba(255, 255, 255, 0.22);
+      padding: 7px 14px;
+      font-size: 0.84rem;
+      min-height: 36px;
+    }
+
+    /* ============ HEADER ============ */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px 18px;
+      background: rgba(15, 19, 44, 0.82);
+      backdrop-filter: blur(16px);
+      border-bottom: 1.5px solid rgba(255, 255, 255, 0.12);
+      position: sticky;
+      top: 0;
+      z-index: 60;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+    .brand span.pill {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.72rem;
+      background: rgba(52, 211, 153, 0.2);
+      color: var(--mint);
+      border: 1px solid rgba(52, 211, 153, 0.45);
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+    .header-actions { display: flex; gap: 8px; align-items: center; }
+
+    /* ============ TOASTS ============ */
+    #toast-container {
+      position: fixed;
+      top: 68px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 250;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      width: 92%;
+      max-width: 440px;
+      pointer-events: none;
+    }
+    .toast {
+      background: #1e293b;
+      border: 2px solid var(--amber);
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+      animation: popUp 0.24s ease forwards;
+    }
+    @keyframes popUp {
+      from { opacity: 0; transform: translateY(-8px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ============ ÉCRAN D'ACCUEIL ============ */
+    #setup-screen {
+      max-width: 820px;
+      margin: 22px auto;
+      padding: 26px;
+      background: var(--surface);
+      backdrop-filter: blur(22px);
+      border: 1.5px solid var(--border-soft);
+      border-radius: 32px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+    }
+    .setup-hero { text-align: center; margin-bottom: 20px; }
+    .setup-hero h1 { font-size: clamp(1.7rem, 4vw, 2.3rem); margin-bottom: 8px; }
+    .setup-hero h1 span { color: var(--amber); }
+
+    .rules-pills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .rule-pill {
+      background: rgba(255, 255, 255, 0.11);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 6px 13px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+
+    .mode-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    .mode-card {
+      background: rgba(255, 255, 255, 0.06);
+      border: 2px solid rgba(255, 255, 255, 0.14);
+      border-radius: 24px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .mode-card.active {
+      border-color: var(--sky);
+      background: rgba(56, 189, 248, 0.18);
+    }
+    .mode-card h3 { font-size: 1.04rem; margin-bottom: 4px; }
+    .mode-card p { font-size: 0.85rem; color: var(--muted); }
+
+    .count-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 12px 18px;
+      border-radius: 22px;
+      border: 1.5px solid rgba(255, 255, 255, 0.14);
+      margin-bottom: 14px;
+    }
+    .count-btns { display: flex; gap: 8px; }
+    .count-btn { width: 46px; min-height: 40px; background: rgba(255, 255, 255, 0.12); color: #fff; }
+    .count-btn.active { background: var(--amber); color: #451a03; box-shadow: 0 4px 0 #b45309; }
+
+    .players-config {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    .player-setup-box {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1.5px solid rgba(255, 255, 255, 0.14);
+      border-radius: 22px;
+      padding: 13px;
+    }
+    .player-setup-box label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+    .player-setup-box input, .player-setup-box select {
+      width: 100%;
+      padding: 8px 12px;
+      background: rgba(15, 23, 42, 0.72);
+      color: #fff;
+      border: 1.5px solid rgba(255, 255, 255, 0.18);
+      border-radius: 14px;
+      margin-bottom: 7px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    /* ================= LAYOUT DU JEU ================= */
+    #game-screen {
+      display: none;
+      max-width: 1320px;
+      margin: 12px auto;
+      padding: 0 14px 28px;
+      gap: 20px;
+      grid-template-columns: minmax(610px, 680px) 1fr;
+      align-items: start;
+    }
+    #game-screen.active { display: grid; }
+
+    /* ================= PLATEAU ORBITAL (24 BULLES) ================= */
+    .board-orbit {
+      position: relative;
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 65%, transparent 100%);
+      border: 2px dashed rgba(255, 255, 255, 0.18);
+    }
+
+    .orbit-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    .nodes-layer { position: absolute; inset: 0; }
+
+    .orbit-node {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      width: 10.4%;
+      height: 10.4%;
+      border-radius: 20px;
+      background: #232a5c;
+      border: 2px solid rgba(255, 255, 255, 0.22);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3px;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 5px 0 rgba(10, 14, 35, 0.65), 0 8px 16px rgba(0, 0, 0, 0.35);
+      transition: transform 0.16s ease, border-color 0.16s ease;
+      z-index: 2;
+    }
+    .orbit-node:hover {
+      transform: translate(-50%, -50%) scale(1.18);
+      z-index: 25;
+      border-color: #fff;
+    }
+    .orbit-node.milestone {
+      width: 11.2%;
+      height: 11.2%;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #3b2d7a, #272259);
+      border-color: rgba(251, 191, 36, 0.65);
+    }
+    .orbit-node.unexpected-tile {
+      background: linear-gradient(145deg, #6b4c18, #3d2c14);
+      border-color: var(--amber);
+      box-shadow: 0 5px 0 rgba(10, 14, 35, 0.65), 0 0 14px rgba(251, 191, 36, 0.28);
+    }
+    .orbit-node.phone-tile {
+      background: linear-gradient(145deg, #1b4d6e, #1b2f57);
+      border-color: var(--sky);
+    }
+    .orbit-node.active-pos {
+      border-color: var(--amber) !important;
+      box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.45), 0 10px 25px rgba(0,0,0,0.5) !important;
+      z-index: 12;
+    }
+
+    .node-num {
+      display: none;
+      position: absolute;
+      top: 5px;
+      left: 8px;
+      font-size: 0.68rem;
+      color: var(--muted);
+      font-weight: 800;
+    }
+    .node-bar { position: absolute; top: 0; left: 16%; right: 16%; height: 5px; border-radius: 0 0 999px 999px; }
+    .node-shields {
+      position: absolute;
+      top: -10px;
+      font-size: 0.62rem;
+      background: #0f172a;
+      padding: 1px 6px;
+      border-radius: 999px;
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      white-space: nowrap;
+    }
+    .node-icon { font-size: 1.08rem; line-height: 1; }
+    .node-name {
+      font-size: 0.54rem;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.04;
+      color: #fff;
+      margin-top: 2px;
+      max-width: 96%;
+      overflow: hidden;
+    }
+    .node-price { font-size: 0.54rem; font-weight: 800; color: var(--amber); margin-top: 1px; }
+
+    .node-tokens {
+      position: absolute;
+      bottom: -11px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      justify-content: center;
+      z-index: 8;
+      pointer-events: none;
+    }
+    .token-chip {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      border: 2px solid #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.55);
+      margin-left: -6px;
+    }
+    .token-chip:first-child { margin-left: 0; }
+    .token-chip.active-turn {
+      transform: scale(1.24) translateY(-4px);
+      border-color: var(--amber);
+      z-index: 10;
+    }
+
+    /* NOYAU CENTRAL */
+    .board-core {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 58%;
+      height: 58%;
+      border-radius: 50%;
+      background: rgba(24, 30, 68, 0.94);
+      backdrop-filter: blur(20px);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+      padding: 18px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-evenly;
+      gap: 4px;
+      text-align: center;
+      z-index: 10;
+    }
+
+    .core-top-pills { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+    .cagnotte-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(52, 211, 153, 0.16);
+      border: 1.5px solid rgba(52, 211, 153, 0.45);
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--mint);
+    }
+    .cagnotte-pill strong { color: var(--amber); }
+
+    .turn-pill {
+      width: 96%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1.5px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      padding: 5px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      text-align: left;
+    }
+    .turn-player-info { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.88rem; }
+    .turn-avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; border: 2px solid #fff; flex-shrink: 0;
+    }
+
+    /* 2 DÉS 3D */
+    .dice-stage {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      perspective: 420px;
+    }
+    .die-3d {
+      width: 44px; height: 44px; border-radius: 14px;
+      background: linear-gradient(145deg, #ffffff, #e2e8f0);
+      box-shadow: 0 4px 0 #94a3b8, 0 8px 16px rgba(0, 0, 0, 0.35);
+      padding: 6px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      place-items: center;
+    }
+    .die-3d.rolling { animation: tumble3D 0.38s infinite linear; }
+    .die-3d.double-glow {
+      box-shadow: 0 0 0 3px var(--amber), 0 4px 0 #b45309, 0 10px 20px rgba(251, 191, 36, 0.45);
+    }
+    @keyframes tumble3D {
+      0% { transform: rotateX(0deg) rotateY(0deg) scale(1); }
+      50% { transform: rotateX(180deg) rotateY(180deg) scale(1.12); }
+      100% { transform: rotateX(360deg) rotateY(360deg) scale(1); }
+    }
+    .pip { width: 6px; height: 6px; border-radius: 50%; background: transparent; }
+    .pip.on { background: #1e293b; }
+
+    .dice-total-badge {
+      background: rgba(251, 191, 36, 0.2);
+      border: 1.5px solid rgba(251, 191, 36, 0.5);
+      color: var(--amber);
+      font-weight: 800;
+      font-size: 0.78rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      min-width: 46px;
+    }
+
+    .center-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; width: 100%; }
+    .center-controls button { padding: 7px 12px; font-size: 0.8rem; min-height: 36px; }
+
+    .last-action-box {
+      width: 82%;
+      background: rgba(15, 23, 42, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 14px;
+      padding: 6px 10px;
+      font-size: 0.74rem;
+      line-height: 1.3;
+      color: #f1f5f9;
+      max-height: 46px;
+      overflow-y: auto;
+    }
+    .last-action-box strong { color: var(--amber); }
+
+    /* ================= SIDEBAR ================= */
+    .sidebar { display: flex; flex-direction: column; gap: 14px; }
+    .panel {
+      background: var(--surface);
+      backdrop-filter: blur(18px);
+      border: 1.5px solid var(--border-soft);
+      border-radius: 26px;
+      padding: 16px;
+    }
+    .panel h3 {
+      font-size: 1.02rem; margin-bottom: 10px; color: #fff;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .players-list { display: flex; flex-direction: column; gap: 10px; }
+    .player-card {
+      background: rgba(255, 255, 255, 0.06);
+      border: 2px solid rgba(255, 255, 255, 0.12);
+      border-radius: 22px;
+      padding: 12px 14px;
+      transition: all 0.2s ease;
+    }
+    .player-card.active {
+      border-color: var(--amber);
+      background: rgba(251, 191, 36, 0.12);
+    }
+    .player-card.bankrupt { opacity: 0.42; filter: grayscale(0.85); }
+    .player-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+    .player-identity { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 0.96rem; }
+    .player-money { font-weight: 800; color: var(--mint); font-size: 0.98rem; }
+    .player-tags { display: flex; flex-wrap: wrap; gap: 5px; font-size: 0.74rem; }
+    .tag { padding: 2px 9px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); color: #fff; font-weight: 600; }
+    .tag.jail { background: rgba(244, 63, 94, 0.28); color: #fecdd3; }
+    .tag.streak { background: rgba(251, 191, 36, 0.24); color: var(--amber); }
+
+    .win-bar-wrap {
+      width: 100%; height: 6px; background: rgba(255, 255, 255, 0.12);
+      border-radius: 999px; margin-top: 8px; overflow: hidden;
+    }
+    .win-bar { height: 100%; border-radius: 999px; transition: width 0.35s ease; }
+
+    .prop-mini-list { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+    .prop-pill { font-size: 0.72rem; padding: 3px 9px; border-radius: 999px; color: #0f172a; font-weight: 800; cursor: pointer; }
+
+    .tip-box {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.16), rgba(168, 85, 247, 0.14));
+      border: 1.5px solid rgba(56, 189, 248, 0.35);
+      border-radius: 24px;
+      padding: 15px;
+      font-size: 0.9rem;
+      line-height: 1.48;
+    }
+    .tip-box strong { color: var(--amber); display: block; margin-bottom: 4px; }
+
+    /* ================= MODALS ================= */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 14, 35, 0.8);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+    #game-modal-backdrop { z-index: 120; }
+    #info-modal-backdrop { z-index: 180; }
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      width: 100%;
+      max-width: 510px;
+      background: var(--modal-bg);
+      border: 2px solid rgba(255, 255, 255, 0.22);
+      border-radius: 30px;
+      padding: 22px;
+      box-shadow: 0 24px 65px rgba(0, 0, 0, 0.6);
+      max-height: 92vh;
+      overflow-y: auto;
+      animation: popUp 0.2s ease;
+    }
+    .modal.event-alert { border-color: var(--amber); }
+
+    /* SMARTPHONE POPUP */
+    .modal.phone-mode {
+      max-width: 390px;
+      background: #0f172a;
+      border: 6px solid #334155;
+      border-radius: 42px;
+      padding: 12px 14px 18px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.78);
+    }
+    .modal.phone-mode .modal-header { display: none; }
+    .modal.phone-mode .modal-body { margin-bottom: 0; }
+    .modal.phone-mode .modal-actions { margin-top: 10px; justify-content: center; }
+
+    .phone-notch {
+      width: 110px; height: 22px; background: #020617;
+      border-radius: 999px; margin: 0 auto 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .phone-notch span { width: 8px; height: 8px; border-radius: 50%; background: #1e293b; }
+    .phone-statusbar {
+      display: flex; justify-content: space-between; font-size: 0.72rem;
+      color: #cbd5e1; font-weight: 700; padding: 0 8px 8px;
+    }
+    .phone-app-header {
+      background: #1e293b;
+      border-radius: 20px 20px 8px 8px;
+      padding: 10px 14px;
+      display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .phone-contact-av {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      display: flex; align-items: center; justify-content: center; font-size: 1.15rem;
+    }
+    .phone-chat-area {
+      background: #0b1120;
+      padding: 12px;
+      min-height: 190px;
+      max-height: 250px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .bubble {
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: 20px;
+      font-size: 0.87rem;
+      line-height: 1.38;
+      animation: popUp 0.2s ease;
+    }
+    .bubble.in { align-self: flex-start; background: #1e293b; color: #f8fafc; border-bottom-left-radius: 6px; }
+    .bubble.out { align-self: flex-end; background: linear-gradient(135deg, #0284c7, #38bdf8); color: #fff; font-weight: 600; border-bottom-right-radius: 6px; }
+    .bubble.typing { color: #94a3b8; font-style: italic; font-size: 0.82rem; }
+    .phone-replies {
+      background: #1e293b;
+      border-radius: 8px 8px 24px 24px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .phone-reply-btn {
+      text-align: left;
+      padding: 10px 13px;
+      border-radius: 16px;
+      background: rgba(56, 189, 248, 0.14);
+      border: 1.5px solid rgba(56, 189, 248, 0.35);
+      color: #fff;
+      font-size: 0.84rem;
+      font-weight: 600;
+      line-height: 1.3;
+      min-height: 40px;
+    }
+    .phone-reply-btn:hover:not(:disabled) { background: rgba(56, 189, 248, 0.28); }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .modal-header h3 { font-size: 1.12rem; color: #fff; }
+    .modal.event-alert .modal-header h3 { color: var(--amber); }
+    .modal-body { font-size: 0.95rem; line-height: 1.5; margin-bottom: 16px; }
+    .modal-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+
+    .quiz-options { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+    .quiz-opt {
+      text-align: left;
+      padding: 12px 15px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border: 1.5px solid rgba(255, 255, 255, 0.18);
+      font-size: 0.91rem;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+    .quiz-opt:hover:not(:disabled) { border-color: var(--sky); background: rgba(56, 189, 248, 0.18); }
+    .quiz-opt.correct { background: rgba(52, 211, 153, 0.22); border-color: var(--mint); color: #d1fae5; }
+    .quiz-opt.mixed   { background: rgba(251, 191, 36, 0.2); border-color: var(--amber); color: #fef3c7; }
+    .quiz-opt.wrong   { background: rgba(244, 63, 94, 0.24); border-color: var(--danger); color: #ffe4e6; }
+
+    .minigame-timer-wrap {
+      width: 100%; height: 10px; background: rgba(255,255,255,0.12);
+      border-radius: 999px; overflow: hidden; margin: 10px 0;
+    }
+    .minigame-timer-bar { height: 100%; width: 100%; background: linear-gradient(90deg, var(--mint), var(--amber), var(--danger)); transition: width 0.1s linear; }
+    .chat-stream {
+      display: flex; flex-direction: column; gap: 8px;
+      min-height: 195px; max-height: 235px; overflow-y: auto;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 20px; padding: 12px;
+    }
+    .chat-msg-btn {
+      text-align: left; padding: 10px 14px; border-radius: 16px;
+      background: rgba(255, 255, 255, 0.08); border: 1.5px solid rgba(255, 255, 255, 0.16);
+      color: #fff; font-size: 0.89rem; font-weight: 600;
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    }
+    .chat-msg-btn.hit-good { background: rgba(52, 211, 153, 0.25); border-color: var(--mint); opacity: 0.72; }
+    .chat-msg-btn.hit-bad  { background: rgba(244, 63, 94, 0.26); border-color: var(--danger); opacity: 0.72; }
+
+    .manage-row {
+      display: flex; justify-content: space-between; align-items: center; gap: 10px;
+      background: rgba(255, 255, 255, 0.06); padding: 12px 14px; border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.14); margin-bottom: 8px;
+    }
+    .rent-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.88rem; }
+    .rent-table td { padding: 6px 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+    .rent-table td:last-child { text-align: right; font-weight: 700; color: var(--mint); }
+
+    /* ============================================================
+       RESPONSIVE TABLETTE & TÉLÉPHONE
+    ============================================================ */
+    @media (max-width: 1120px) {
+      #game-screen.active { grid-template-columns: 1fr; }
+      .board-orbit { max-width: 680px; }
+    }
+
+    @media (max-width: 840px) {
+      #setup-screen { margin: 12px; padding: 20px; border-radius: 26px; }
+      .mode-selector { grid-template-columns: 1fr; }
+
+      .board-orbit {
+        aspect-ratio: auto;
+        border-radius: 0;
+        background: none;
+        border: none;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .orbit-svg { display: none; }
+
+      .board-core {
+        position: static;
+        transform: none;
+        width: 100%;
+        height: auto;
+        border-radius: 28px;
+        padding: 16px;
+        gap: 10px;
+      }
+      .turn-pill, .last-action-box { width: 100%; }
+
+      .nodes-layer {
+        position: static;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+      .orbit-node, .orbit-node.milestone {
+        position: static;
+        transform: none !important;
+        width: 100%;
+        height: auto;
+        min-height: 92px;
+        border-radius: 20px;
+        padding: 10px 4px 14px;
+      }
+      .node-num { display: block; }
+      .node-icon { font-size: 1.3rem; margin-top: 6px; }
+      .node-name { font-size: 0.74rem; margin-top: 3px; }
+      .node-price { font-size: 0.72rem; }
+      .node-tokens { bottom: -9px; }
+
+      .uniscite-badge { right: 10px; bottom: 10px; padding: 5px 11px; }
+      .uniscite-badge svg { height: 22px; }
+    }
+
+    @media (max-width: 480px) {
+      .nodes-layer { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .orbit-node, .orbit-node.milestone { min-height: 86px; }
+      .node-name { font-size: 0.82rem; }
+      .center-controls button { flex: 1 1 auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-shapes">
+    <div class="bg-blob b1"></div>
+    <div class="bg-blob b2"></div>
+  </div>
+  <canvas id="confetti-canvas"></canvas>
+
+  <div id="toast-container"></div>
+
+  <header>
+    <div class="brand">
+      <span>🛡️ CYBERPOLY</span>
+      <span class="pill">Stop Cyberharcèlement</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn-ghost" id="btn-sound" onclick="toggleSound()">🔊 Son</button>
+      <button class="btn-ghost" onclick="openHelpModal()">📞 Aide 3018</button>
+      <button class="btn-ghost" id="btn-restart" style="display:none;" onclick="confirmRestart()">🔄 Rejouer</button>
+    </div>
+  </header>
+
+  <!-- ============ ÉCRAN D'ACCUEIL ============ -->
+  <section id="setup-screen">
+    <div class="setup-hero">
+      <h1>Le jeu contre le <span>Cyberharcèlement</span></h1>
+      <p style="color:var(--muted); font-size:1rem;">Un jeu de plateau moderne spécial collège & lycée : réagis aux situations, réponds aux messages et protège tes espaces !</p>
+      <div class="rules-pills">
+        <span class="rule-pill">🎲 2 Dés & Doubles</span>
+        <span class="rule-pill">⚠️ 6 cases Inattendu !</span>
+        <span class="rule-pill">📱 Mini-jeu Téléphone</span>
+        <span class="rule-pill">🏆 2 500 ✨ pour gagner !</span>
+      </div>
+    </div>
+
+    <div class="mode-selector">
+      <div class="mode-card active" id="mode-solo" onclick="selectMode('solo')">
+        <h3>🤖 Solo (contre l'IA)</h3>
+        <p>Affronte des IA à un rythme cool et lisible.</p>
+      </div>
+      <div class="mode-card" id="mode-multi" onclick="selectMode('multi')">
+        <h3>👥 À plusieurs (même écran)</h3>
+        <p>Passez-vous le téléphone, la tablette ou l'ordi chacun votre tour !</p>
+      </div>
+    </div>
+
+    <div class="count-row">
+      <div>
+        <strong>Combien de joueurs ?</strong>
+        <div style="font-size:0.84rem; color:var(--muted);" id="count-subtitle">1 Humain + 2 IA</div>
+      </div>
+      <div class="count-btns">
+        <button class="count-btn" onclick="setPlayerCount(2)">2</button>
+        <button class="count-btn active" onclick="setPlayerCount(3)">3</button>
+        <button class="count-btn" onclick="setPlayerCount(4)">4</button>
+      </div>
+    </div>
+
+    <div class="players-config" id="players-config"></div>
+
+    <div style="text-align:center;">
+      <button class="btn-primary" style="padding:14px 40px; font-size:1.05rem;" onclick="startGame()">
+        🚀 Jouer maintenant !
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ ÉCRAN DE JEU ============ -->
+  <main id="game-screen">
+    <div class="board-orbit" id="board">
+      <svg class="orbit-svg" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="42.8" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="0.65" />
+      </svg>
+
+      <!-- Commandes centrales -->
+      <div class="board-core" id="board-core">
+        <div class="core-top-pills">
+          <div class="cagnotte-pill">
+            <span>🌿 Cagnotte :</span>
+            <strong id="cagnotte-val">0 ✨</strong>
+          </div>
+          <div class="cagnotte-pill" style="background:rgba(251,191,36,0.16); border-color:rgba(251,191,36,0.45); color:var(--amber);">
+            <span>🏆 Objectif : 2 500 ✨</span>
+          </div>
+        </div>
+
+        <div class="turn-pill">
+          <div class="turn-player-info">
+            <div class="turn-avatar" id="turn-avatar">🦊</div>
+            <div>
+              <div id="turn-name">Joueur 1</div>
+              <div id="turn-status" style="font-size:0.72rem; color:var(--sky);">À toi de lancer !</div>
+            </div>
+          </div>
+          <div id="turn-balance" style="font-weight:800; color:var(--mint); font-size:0.96rem;">1200 ✨</div>
+        </div>
+
+        <div class="dice-stage">
+          <div class="die-3d" id="die-1"></div>
+          <div class="die-3d" id="die-2"></div>
+          <div class="dice-total-badge" id="dice-total-badge">= 12</div>
+        </div>
+
+        <div class="center-controls">
+          <button class="btn-primary" id="btn-roll" onclick="handleRollClick()">🎲 Lancer</button>
+          <button class="btn-warning" id="btn-manage" onclick="openManageModal()">🛡️ Boucliers</button>
+          <button class="btn-success" id="btn-end-turn" onclick="endTurn()" disabled>⏭️ Suivant</button>
+        </div>
+
+        <div class="last-action-box" id="last-action">
+          ✨ Appuie sur <strong>Lancer</strong> pour démarrer !
+        </div>
+      </div>
+
+      <!-- 24 bulles du plateau -->
+      <div class="nodes-layer" id="nodes-layer"></div>
+    </div>
+
+    <aside class="sidebar">
+      <div class="panel">
+        <h3>👥 Joueurs <span style="font-size:0.75rem; color:var(--muted);">Touche une bulle pour détails</span></h3>
+        <div class="players-list" id="players-list"></div>
+      </div>
+
+      <div class="tip-box">
+        <strong>💡 Le bon réflexe</strong>
+        <span id="daily-tip">
+          Ne réponds jamais aux provocations : fais des captures d'écran, bloque la personne et parles-en à un adulte ou au 3018.
+        </span>
+      </div>
+    </aside>
+  </main>
+
+  <!-- ============ MODAL DE JEU ============ -->
+  <div class="modal-backdrop" id="game-modal-backdrop">
+    <div class="modal" id="game-modal-box">
+      <div class="modal-header">
+        <h3 id="game-modal-title">Titre</h3>
+        <button class="btn-ghost" id="game-modal-close-x" style="min-height:34px; padding:4px 11px;" onclick="closeGameModal()">✕</button>
+      </div>
+      <div class="modal-body" id="game-modal-body"></div>
+      <div class="modal-actions" id="game-modal-actions"></div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL INFO SÉPARÉE ============ -->
+  <div class="modal-backdrop" id="info-modal-backdrop">
+    <div class="modal" id="info-modal-box">
+      <div class="modal-header">
+        <h3 id="info-modal-title">Info</h3>
+        <button class="btn-ghost" style="min-height:34px; padding:4px 11px;" onclick="closeInfoModal()">✕</button>
+      </div>
+      <div class="modal-body" id="info-modal-body"></div>
+      <div class="modal-actions" id="info-modal-actions"></div>
+    </div>
+  </div>
+
+  <!-- ============ LOGO UNISCITÉ EN BAS À DROITE ============ -->
+  <div class="uniscite-badge" aria-label="UnisCité">
+    <svg viewBox="0 0 356 114" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="UnisCité">
+      <path d="M 24 14 C 16 54, 15 92, 30 98 C 44 103, 58 70, 69 25 C 65 55, 62 79, 63 98"
+            fill="none" stroke="#ea5218" stroke-width="11.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M 78 65 L 74 98 M 76 74 C 84 54, 98 52, 99 66 L 96 98"
+            fill="none" stroke="#ea5218" stroke-width="10.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M 118 60 L 114 97"
+            fill="none" stroke="#ea5218" stroke-width="10.5" stroke-linecap="round"/>
+      <path d="M 121 14 Q 123 28 137 30 Q 123 32 121 46 Q 119 32 105 30 Q 119 28 121 14 Z"
+            fill="#ea5218"/>
+      <path d="M 159 58 C 147 52, 136 62, 142 72 C 148 81, 163 83, 156 95 C 149 103, 136 100, 132 94"
+            fill="none" stroke="#ea5218" stroke-width="10.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M 225 44 C 225 27, 217 20, 205 20 C 191 20, 184 30, 184 48 L 184 72 C 184 90, 191 100, 205 100 C 217 100, 225 93, 225 76 L 213 76 C 213 85, 210 89, 205 89 C 199 89, 196 84, 196 72 L 196 48 C 196 36, 199 31, 205 31 C 210 31, 213 35, 213 44 Z"
+            fill="#ea5218"/>
+      <rect x="237" y="21" width="12" height="12" fill="#ea5218"/>
+      <rect x="237" y="42" width="12" height="57" fill="#ea5218"/>
+      <path d="M 266 24 L 278 24 L 278 42 L 289 42 L 289 52 L 278 52 L 278 82 C 278 88, 281 89, 289 89 L 289 99 C 272 100, 266 95, 266 82 L 266 52 L 258 52 L 258 42 L 266 42 Z"
+            fill="#ea5218"/>
+      <path d="M 300 63 C 300 47, 307 41, 320 41 C 333 41, 340 48, 340 64 L 340 73 L 312 73 L 312 80 C 312 87, 315 90, 321 90 C 326 90, 329 87, 329 81 L 340 81 C 339 94, 332 100, 320 100 C 307 100, 300 92, 300 77 Z M 312 64 L 329 64 L 329 59 C 329 53, 326 50, 320 50 C 315 50, 312 53, 312 59 Z"
+            fill="#ea5218"/>
+      <polygon points="318,33 335,16 341,23 324,36" fill="#ea5218"/>
+    </svg>
+  </div>
+
+  <script>
+    /* ============================================================
+       CONFETTIS & AUDIO
+    ============================================================ */
+    function launchConfetti() {
+      const canvas = document.getElementById("confetti-canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+      const colors = ["#38bdf8", "#fb7185", "#34d399", "#fbbf24", "#a855f7"];
+      const pieces = Array.from({ length: 130 }, () => ({
+        x: Math.random() * canvas.width, y: -20 - Math.random() * 180,
+        vx: (Math.random() - 0.5) * 4, vy: Math.random() * 3.5 + 2.5,
+        size: Math.random() * 7 + 4, rot: Math.random() * Math.PI * 2, vr: (Math.random() - 0.5) * 0.2,
+        c: colors[Math.floor(Math.random() * colors.length)]
+      }));
+      let frames = 0;
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+          p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+          ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+          ctx.fillStyle = p.c; ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size*0.6);
+          ctx.restore();
+        });
+        if (++frames < 210) requestAnimationFrame(draw);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      draw();
+    }
+
+    let soundEnabled = true;
+    let audioCtx = null;
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById("btn-sound").textContent = soundEnabled ? "🔊 Son" : "🔇 Muet";
+    }
+
+    function playSound(type) {
+      if (!soundEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        const now = audioCtx.currentTime;
+        const tone = (freq, dur, wave = "sine", vol = 0.07, delay = 0) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = wave;
+          osc.frequency.setValueAtTime(freq, now + delay);
+          gain.gain.setValueAtTime(vol, now + delay);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + delay + dur);
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(now + delay); osc.stop(now + delay + dur);
+        };
+        if (type === "step") tone(520 + Math.random() * 70, 0.05, "triangle", 0.04);
+        else if (type === "msg") { tone(740, 0.07, "sine", 0.06, 0); tone(980, 0.1, "sine", 0.06, 0.07); }
+        else if (type === "roll") { tone(320, 0.06, "square", 0.03, 0); tone(460, 0.08, "triangle", 0.045, 0.08); }
+        else if (type === "buy") { tone(523, 0.1, "sine", 0.07, 0); tone(659, 0.14, "sine", 0.07, 0.08); }
+        else if (type === "good") { tone(523, 0.1, "sine", 0.07, 0); tone(659, 0.1, "sine", 0.07, 0.08); tone(784, 0.2, "sine", 0.08, 0.16); }
+        else if (type === "warn") { tone(360, 0.14, "triangle", 0.07, 0); tone(300, 0.2, "triangle", 0.06, 0.12); }
+        else if (type === "bad")  { tone(220, 0.15, "sawtooth", 0.05, 0); tone(155, 0.25, "sawtooth", 0.05, 0.14); }
+        else if (type === "win")  { [523, 659, 784, 1046].forEach((f, i) => tone(f, 0.25, "sine", 0.08, i * 0.11)); }
+      } catch (e) {}
+    }
+
+    function showToast(msg) {
+      const container = document.getElementById("toast-container");
+      const t = document.createElement("div");
+      t.className = "toast";
+      t.innerHTML = msg;
+      container.appendChild(t);
+      setTimeout(() => {
+        t.style.transition = "opacity 0.3s ease";
+        t.style.opacity = "0";
+        setTimeout(() => t.remove(), 320);
+      }, 2300);
+    }
+
+    /* ============================================================
+       24 CASES DU PLATEAU (DONT 6 CASES INATTENDU !)
+    ============================================================ */
+    const COLOR_MAP = {
+      orange:  { label: "Jeux & Commentaires", hex: "#fb923c", shieldCost: 50 },
+      cyan:    { label: "Réseaux & Stories",   hex: "#38bdf8", shieldCost: 60 },
+      pink:    { label: "Classe & Messages",   hex: "#f472b6", shieldCost: 80 },
+      mint:    { label: "Respect & Identité",  hex: "#34d399", shieldCost: 100 },
+      service: { label: "Numéro d'aide",       hex: "#a78bfa", shieldCost: 0 }
+    };
+
+    const BOARD_TILES = [
+      { id: 0,  type: "go",         name: "DÉPART", icon: "🕊️", desc: "Espace Serein : +150 ✨ à chaque passage !" },
+      { id: 1,  type: "prop",       group: "orange", name: "Commentaires", price: 80, rents: [15, 40, 80, 140], icon: "💬", desc: "Bloque les commentaires moqueurs sous les posts." },
+      { id: 2,  type: "unexpected", name: "Inattendu !", icon: "⚠️", desc: "Événement inattendu : fais le bon choix !" },
+      { id: 3,  type: "prop",       group: "orange", name: "Chat Gaming", price: 100, rents: [20, 50, 95, 160], icon: "🎧", desc: "Signale les insultes dans les salons vocaux." },
+      { id: 4,  type: "phone",      name: "Messages !", icon: "📱", desc: "Mini-jeu Téléphone : réponds bien aux messages !" },
+      { id: 5,  type: "service",    group: "service", name: "Ligne 3018", price: 150, icon: "📞", desc: "Numéro gratuit, anonyme et confidentiel (7j/7, 9h-23h)." },
+
+      { id: 6,  type: "jail",       name: "COMPTE ISOLÉ", icon: "🔒", desc: "Simple visite, ou pause du compte après signalements." },
+      { id: 7,  type: "prop",       group: "cyan", name: "Stories", price: 120, rents: [25, 60, 115, 190], icon: "📸", desc: "Ne fais jamais de capture d'écran pour te moquer." },
+      { id: 8,  type: "unexpected", name: "Inattendu !", icon: "⚠️", desc: "Événement inattendu : fais le bon choix !" },
+      { id: 9,  type: "prop",       group: "cyan", name: "Vidéos Courtes", price: 140, rents: [30, 70, 130, 210], icon: "🎬", desc: "Stoppe les montages et défis moqueurs." },
+      { id: 10, type: "minigame",   name: "Modère Tchat", icon: "🎮", desc: "Mini-jeu (10s) : supprime vite les messages toxiques !" },
+      { id: 11, type: "unexpected", name: "Inattendu !", icon: "⚠️", desc: "Événement inattendu : fais le bon choix !" },
+
+      { id: 12, type: "free",       name: "PAUSE CALME", icon: "🌿", desc: "Loin des écrans : gagne toute la Cagnotte !" },
+      { id: 13, type: "prop",       group: "pink", name: "Groupe Classe", price: 160, rents: [35, 80, 150, 240], icon: "🏫", desc: "Défends un camarade mis à l'écart dans le groupe." },
+      { id: 14, type: "unexpected", name: "Inattendu !", icon: "⚠️", desc: "Événement inattendu : fais le bon choix !" },
+      { id: 15, type: "prop",       group: "pink", name: "Messages Privés", price: 180, rents: [40, 90, 170, 270], icon: "✉️", desc: "Garde les captures d'écran avant de bloquer." },
+      { id: 16, type: "tax",        amount: 80, name: "Rumeur Virale", icon: "🗣️", desc: "Une rumeur circule : verse 80 ✨ à la Cagnotte." },
+      { id: 17, type: "service",    group: "service", name: "Portail PHAROS", price: 150, icon: "🚨", desc: "Site officiel pour signaler les menaces graves." },
+
+      { id: 18, type: "gotojail",   name: "RAID DE HAINE !", icon: "🛑", desc: "Harcèlement en groupe -> va en Compte Isolé !" },
+      { id: 19, type: "prop",       group: "mint", name: "Faux Profil", price: 200, rents: [45, 105, 195, 300], icon: "🎭", desc: "Signale les faux comptes créés pour humilier." },
+      { id: 20, type: "unexpected", name: "Inattendu !", icon: "⚠️", desc: "Événement inattendu : fais le bon choix !" },
+      { id: 21, type: "prop",       group: "mint", name: "Droit à l'Image", price: 220, rents: [50, 115, 215, 330], icon: "🖼️", desc: "Jamais de photo publiée sans l'accord de la personne." },
+      { id: 22, type: "quiz",       name: "Quiz Express", icon: "🧠", desc: "Réponds bien pour gagner +100 ✨ !" },
+      { id: 23, type: "unexpected", name: "Inattendu !", icon: "⚠️", desc: "Événement inattendu : fais le bon choix !" }
+    ];
+
+    /* ============================================================
+       32 ÉVÉNEMENTS INATTENDUS (100 % CYBERHARCÈLEMENT)
+    ============================================================ */
+    const UNEXPECTED_EVENTS = [
+      { title: "1. Photo gênante aux vestiaires", scenario: "Quelqu'un poste une photo prise en cachette d'un élève aux vestiaires dans le groupe de classe.", choices: [
+        { quality: "good", label: "Dire stop, rassurer l'élève en privé, capturer la preuve et prévenir un adulte / le 3018.", delta: 120, feedback: "Top ! Tu protèges l'élève et tu brises l'effet de groupe." },
+        { quality: "mixed", label: "Quitter le groupe sans rien dire à personne.", delta: 30, feedback: "Mitigé : tu ne participes pas, mais ton camarade reste seul." },
+        { quality: "bad", label: "Mettre un émoji 😂 et l'envoyer à un autre pote.", delta: -110, feedback: "Mauvais choix ! Diffuser une photo sans accord est illégal (-110 ✨)." }
+      ]},
+      { title: "2. Chantage en messages privés", scenario: "Un inconnu menace un ado en DM : « Envoie 50€ sinon j'envoie ta photo privée à tout le lycée ! »", choices: [
+        { quality: "good", label: "Ne jamais payer, faire des captures, bloquer et appeler le 3018 ou le 17.", delta: 130, feedback: "Réflexe parfait ! Le 3018 sait bloquer ces chantages très vite." },
+        { quality: "mixed", label: "Bloquer le compte mais effacer toute la discussion par honte.", delta: 35, feedback: "Mitigé : bloquer est bien, mais sans captures il n'y a plus de preuves." },
+        { quality: "bad", label: "Payer vite en espérant qu'il tienne parole.", delta: -130, feedback: "Mauvais choix ! Si on paie, le maître-chanteur en redemande toujours (-130 ✨)." }
+      ]},
+      { title: "3. Faux compte humiliant", scenario: "Tu découvres un faux profil Insta avec le nom d'une élève pour raconter des mensonges sur elle.", choices: [
+        { quality: "good", label: "La prévenir, garder les captures + le lien, et signaler le faux compte sur l'appli et au 3018.", delta: 130, feedback: "Super ! Le signalement à plusieurs fait fermer le compte bien plus vite." },
+        { quality: "mixed", label: "Signaler le compte tout seul sans rien dire à l'élève.", delta: 40, feedback: "Mitigé : utile, mais prévenir la victime lui évite un choc." },
+        { quality: "bad", label: "Commenter en dessous pour voir ce que les autres disent.", delta: -100, feedback: "Mauvais choix ! Commenter fait monter le faux compte dans l'algorithme (-100 ✨)." }
+      ]},
+      { title: "4. Acharnement en vocal gaming", scenario: "En pleine partie, deux joueurs insultent sans arrêt un jeune coéquipier qui débute.", choices: [
+        { quality: "good", label: "Le défendre calmement, signaler les deux agresseurs et l'inviter en vocal privé.", delta: 110, feedback: "Bravo ! Un seul soutien suffit souvent à calmer la toxicité." },
+        { quality: "mixed", label: "Couper ton son et muter tout le monde sans signaler.", delta: 25, feedback: "Mitigé : tu es tranquille, mais les harceleurs continueront sur un autre." },
+        { quality: "bad", label: "Rire avec eux pour rester dans la team.", delta: -100, feedback: "Mauvais choix ! Rire encourage le harcèlement (-100 ✨)." }
+      ]},
+      { title: "5. Adresse balancée (Doxxing)", scenario: "Pendant un clash, quelqu'un publie la vraie adresse et le numéro d'un élève pour qu'on aille l'embêter.", choices: [
+        { quality: "good", label: "Capturer le post, signaler d'urgence (appli + PHAROS + 3018) et prévenir l'élève et ses parents.", delta: 140, feedback: "Réflexe vital ! Balancer l'adresse de quelqu'un est un délit grave." },
+        { quality: "mixed", label: "Envoyer un message gentil à l'auteur pour lui demander d'effacer.", delta: 30, feedback: "Mitigé : l'élève reste en danger tant que les adultes ne savent pas." },
+        { quality: "bad", label: "Partager le post à des amis pour vérifier si c'est vrai.", delta: -120, feedback: "Mauvais choix ! Repartager des infos privées aggrave le danger (-120 ✨)." }
+      ]},
+      { title: "6. Sondage physique en story", scenario: "Un compte poste un sondage « Qui est le plus moche de la classe ? » avec 4 photos d'élèves.", choices: [
+        { quality: "good", label: "Ne pas voter, signaler la story pour harcèlement et soutenir les élèves visés.", delta: 120, feedback: "Parfait ! Ces sondages détruisent la confiance en soi." },
+        { quality: "mixed", label: "Passer la story sans voter et ne rien faire.", delta: 25, feedback: "Mitigé : tu ne participes pas, mais la story reste en ligne." },
+        { quality: "bad", label: "Voter « pour rigoler » et envoyer la story à tes potes.", delta: -110, feedback: "Mauvais choix ! Voter valide l'humiliation (-110 ✨)." }
+      ]},
+      { title: "7. Groupe secret d'exclusion", scenario: "Des camarades créent un groupe WhatsApp « Sans Léa » juste pour se moquer d'elle tous les soirs.", choices: [
+        { quality: "good", label: "Refuser les moqueries, prévenir un adulte de confiance et inclure Léa ailleurs.", delta: 120, feedback: "Top ! L'exclusion répétée est une forme de harcèlement." },
+        { quality: "mixed", label: "Rester dans le groupe en mettant les notifications en sourdine.", delta: 20, feedback: "Mitigé : voir sans réagir laisse croire aux autres que tu es d'accord." },
+        { quality: "bad", label: "Poster des blagues sur Léa pour suivre le mouvement.", delta: -115, feedback: "Mauvais choix ! Tu participes activement au harcèlement (-115 ✨)." }
+      ]},
+      { title: "8. Sticker humiliant sur WhatsApp", scenario: "Quelqu'un fabrique un sticker WhatsApp avec la tête d'un camarade qui pleure et l'envoie partout.", choices: [
+        { quality: "good", label: "Demander d'arrêter, ne jamais enregistrer le sticker et avertir un adulte / le 3018.", delta: 120, feedback: "Exactement ! Même un sticker peut être une atteinte à l'image." },
+        { quality: "mixed", label: "Ne pas utiliser le sticker mais ne rien dire quand les autres l'envoient.", delta: 30, feedback: "Mitigé : ne pas l'envoyer est bien, mais dire stop aide vraiment." },
+        { quality: "bad", label: "Enregistrer le sticker dans tes favoris pour le ressortir plus tard.", delta: -105, feedback: "Mauvais choix ! Garder et diffuser ça prolonge l'humiliation (-105 ✨)." }
+      ]},
+      { title: "9. Bagarre filmée devant le lycée", scenario: "Des élèves filment un camarade bousculé devant le portail et postent la vidéo sur TikTok.", choices: [
+        { quality: "good", label: "Signaler la vidéo sur TikTok + PHAROS, aider la victime et prévenir le lycée.", delta: 135, feedback: "Excellent ! Filmer et diffuser une agression est puni par la loi." },
+        { quality: "mixed", label: "Regarder la vidéo en entier sans la liker ni la partager.", delta: 20, feedback: "Mitigé : sans signalement, la vidéo continue de tourner." },
+        { quality: "bad", label: "Mettre la vidéo en story avec le texte « MDR 😂 ».", delta: -130, feedback: "Mauvais choix ! Diffuser une agression est un délit grave (-130 ✨)." }
+      ]},
+      { title: "10. Rumeur virale à la récré", scenario: "Une grosse rumeur fausse sur la vie privée d'un élève tourne dans tout le collège sur Snap.", choices: [
+        { quality: "good", label: "Couper la rumeur (« C'est faux, arrêtez »), soutenir l'élève et prévenir la vie scolaire.", delta: 120, feedback: "Bravo ! Stopper une rumeur demande du courage mais change tout." },
+        { quality: "mixed", label: "Ne pas la répéter mais écouter les potins sans rien dire.", delta: 30, feedback: "Mitigé : tu ne la propages pas, mais la victime reste isolée." },
+        { quality: "bad", label: "La transférer à 5 personnes en disant « J'ai entendu ça, choqué ».", delta: -100, feedback: "Mauvais choix ! Transférer « juste pour info » fait exploser la rumeur (-100 ✨)." }
+      ]},
+      { title: "11. Raid sous un TikTok", scenario: "Une élève poste une vidéo de danse et 40 comptes de son collège la bombardent d'insultes.", choices: [
+        { quality: "good", label: "Laisser un commentaire gentil, signaler les comptes haineux et lui conseiller de filtrer les comms.", delta: 125, feedback: "Super ! Les messages positifs et les signalements protègent la créatrice." },
+        { quality: "mixed", label: "Liker la vidéo en silence pour qu'elle voie 1 like.", delta: 35, feedback: "Mitigé : c'est gentil, mais signaler les insultes aide encore plus." },
+        { quality: "bad", label: "Commenter « Supprime avant qu'on se moque encore plus ».", delta: -105, feedback: "Mauvais choix ! C'est culpabiliser la victime au lieu des harceleurs (-105 ✨)." }
+      ]},
+      { title: "12. Capture d'une conf' privée", scenario: "Quelqu'un capture un message où un élève se confiait sur un problème familial et le poste en public.", choices: [
+        { quality: "good", label: "Exiger la suppression immédiate, soutenir l'élève et alerter les parents / 3018.", delta: 130, feedback: "Parfait ! Trahir une confidence en la publiant est une vraie violence." },
+        { quality: "mixed", label: "Envoyer un message désolé à la victime sans intervenir.", delta: 30, feedback: "Mitigé : ton soutien compte, mais il faut faire supprimer le post." },
+        { quality: "bad", label: "Lire la capture avec des potes à la pause.", delta: -100, feedback: "Mauvais choix ! Regarder et en rire en groupe blesse énormément (-100 ✨)." }
+      ]},
+      { title: "13. Moqueries sur les vêtements", scenario: "Dans un live, des élèves se moquent des baskets pas de marque d'un garçon de 5ème.", choices: [
+        { quality: "good", label: "Prendre sa défense dans le tchat et signaler les commentaires méchants.", delta: 110, feedback: "Top ! Personne n'a à être harcelé pour ses vêtements ou son budget." },
+        { quality: "mixed", label: "Quitter le live sans rien écrire.", delta: 25, feedback: "Mitigé : tu pars, mais les moqueries continuent." },
+        { quality: "bad", label: "Écrire « Mdrrr c'est des fausses » dans le tchat.", delta: -100, feedback: "Mauvais choix ! Participer aux moqueries en live est blessant (-100 ✨)." }
+      ]},
+      { title: "14. Faux messages envoyés en son nom", scenario: "Un élève a laissé son téléphone déverrouillé 2 minutes : quelqu'un a envoyé des insultes à la prof depuis son compte.", choices: [
+        { quality: "good", label: "Témoigner de la vérité auprès du CPE/prof et aider ton camarade à expliquer.", delta: 120, feedback: "Super ! Rétablir la vérité protège un camarade piégé." },
+        { quality: "mixed", label: "Ne rien dire pour ne pas dénoncer le farceur.", delta: 20, feedback: "Mitigé : un innocent risque d'être puni gravement à cause du silence." },
+        { quality: "bad", label: "Filmer la scène pour te moquer de lui quand il se fait punir.", delta: -110, feedback: "Mauvais choix ! C'est injuste et harcelant (-110 ✨)." }
+      ]},
+      { title: "15. Challenge humiliant", scenario: "Un groupe force un élève timide à faire un défi ridicule devant la caméra pour « rentrer dans la bande ».", choices: [
+        { quality: "good", label: "Dire « Laissez-le tranquille », refuser le défi et prévenir un adulte.", delta: 120, feedback: "Bravo ! Forcer quelqu'un à s'humilier pour être accepté est du harcèlement." },
+        { quality: "mixed", label: "Partir plus loin pour ne pas regarder.", delta: 25, feedback: "Mitigé : si personne n'intervient, l'élève subira la pression." },
+        { quality: "bad", label: "Sortir ton tel pour filmer le défi.", delta: -110, feedback: "Mauvais choix ! Filmer encourage la pression de groupe (-110 ✨)." }
+      ]},
+      { title: "16. Moqueries sur l'accent ou l'origine", scenario: "Sur un serveur Discord, un joueur est insulté à cause de son accent ou de ses origines.", choices: [
+        { quality: "good", label: "Signaler les propos racistes/discriminants aux modos + PHAROS et soutenir le joueur.", delta: 130, feedback: "Exemplaire ! Les injures discriminatoires sont gravement punies par la loi." },
+        { quality: "mixed", label: "Dire « Bon changez de sujet » sans signaler les insultes.", delta: 35, feedback: "Mitigé : ça calme parfois, mais les auteurs doivent être sanctionnés." },
+        { quality: "bad", label: "Sortir un cliché « pour rigoler ».", delta: -120, feedback: "Mauvais choix ! Les propos discriminatoires ne sont jamais des blagues (-120 ✨)." }
+      ]},
+      { title: "17. Mème moqueur avec photo d'élève", scenario: "Un compte « Mèmes du collège » détourne une photo prise en classe pour ridiculiser un élève.", choices: [
+        { quality: "good", label: "Signaler le compte (et le 3018 si ça continue) et ne pas t'abonner.", delta: 120, feedback: "Parfait ! Ces comptes vivent des abonnés et des partages." },
+        { quality: "mixed", label: "Ne pas liker, mais rester abonné pour voir les autres mèmes.", delta: 20, feedback: "Mitigé : rester abonné donne de l'importance au compte." },
+        { quality: "bad", label: "Taguer ton pote en commentaire avec « Regarde sa tête 💀 ».", delta: -105, feedback: "Mauvais choix ! Taguer des potes booste le post (-105 ✨)." }
+      ]},
+      { title: "18. Photo intime reçue en DM", scenario: "Un pote t'envoie en DM la photo intime d'une fille du lycée en disant « Fais tourner lol ».", choices: [
+        { quality: "good", label: "Supprimer tout de suite, ne jamais transférer, lui dire que c'est illégal et prévenir le 3018 / un adulte.", delta: 140, feedback: "Réflexe vital ! Posséder ou partager une image intime d'un mineur est très gravement puni." },
+        { quality: "mixed", label: "Répondre « Nan je veux pas » et ne rien faire de plus.", delta: 35, feedback: "Mitigé : bien de refuser, mais le pote risque de l'envoyer à 10 autres." },
+        { quality: "bad", label: "L'enregistrer « juste au cas où » ou la montrer à un ami.", delta: -150, feedback: "Danger maximal ! Garder ou montrer ce type d'image est gravement puni (-150 ✨)." }
+      ]},
+      { title: "19. Un ami s'isole brusquement", scenario: "Depuis 10 jours, ton pote qui se fait critiquer en ligne sèche les cours et répond plus aux messages.", choices: [
+        { quality: "good", label: "Aller le voir en vrai ou l'appeler gentiment, et prévenir ses parents / l'infirmière scolaire / le 3018.", delta: 135, feedback: "Bravo ! Repérer le mal-être et alerter des adultes peut sauver quelqu'un." },
+        { quality: "mixed", label: "Lui envoyer juste « Tu viens demain ? » sans poser de question.", delta: 30, feedback: "Mitigé : garde le lien, mais montre-lui que tu es là pour l'écouter." },
+        { quality: "bad", label: "Te dire « Il fait sa star, il reviendra tout seul ».", delta: -100, feedback: "Mauvais choix ! L'isolement est un vrai signal d'alerte (-100 ✨)." }
+      ]},
+      { title: "20. Menaces sur appli anonyme (NGL)", scenario: "Une élève reçoit anonymement « Tout le monde te déteste, viens pas lundi » via un lien de questions anonymes.", choices: [
+        { quality: "good", label: "Lui conseiller de faire des captures, désactiver le lien anonyme et appeler le 3018 / prévenir ses parents.", delta: 130, feedback: "Exactement ! Même derrière « l'anonymat », la police peut retrouver l'auteur." },
+        { quality: "mixed", label: "Lui dire de supprimer l'appli et d'oublier.", delta: 35, feedback: "Mitigé : supprimer aide, mais il faut garder les captures avant !" },
+        { quality: "bad", label: "Lui répondre « Fallait pas mettre de lien aussi, bien fait ».", delta: -110, feedback: "Mauvais choix ! La faute vient de celui qui menace, jamais de la victime (-110 ✨)." }
+      ]},
+      { title: "21. Exclu du serveur de révisions", scenario: "Un élève est banni du Discord de révisions de la classe juste parce que 2 leaders l'aiment pas.", choices: [
+        { quality: "good", label: "Lui partager les cours en privé et demander à le réintégrer.", delta: 115, feedback: "Super ! L'entraide scolaire ne doit exclure personne." },
+        { quality: "mixed", label: "Rien dire mais lui filer un exercice une fois.", delta: 35, feedback: "Mitigé : c'est déjà ça, mais s'opposer à l'exclusion est encore mieux." },
+        { quality: "bad", label: "Te moquer en disant « T'as qu'à réviser tout seul ».", delta: -95, feedback: "Mauvais choix ! C'est du rejet gratuit (-95 ✨)." }
+      ]},
+      { title: "22. Body shaming sous un post sport", scenario: "Sous la photo d'un élève fier de son entraînement, des commentaires se moquent de son poids.", choices: [
+        { quality: "good", label: "Commenter un encouragement positif et signaler les moqueries.", delta: 115, feedback: "Génial ! Le soutien visible étouffe les commentaires haineux." },
+        { quality: "mixed", label: "Liker la photo sans regarder les commentaires.", delta: 30, feedback: "Mitigé : un petit mot gentil + signalement aide encore plus." },
+        { quality: "bad", label: "Liker un commentaire moqueur parce que tu trouves ça drôle.", delta: -100, feedback: "Mauvais choix ! Liker une moquerie y participe directement (-100 ✨)." }
+      ]},
+      { title: "23. « Like mon clash stp ! »", scenario: "Un pote vient d'insulter quelqu'un en commentaire et t'envoie le lien : « Viens liker mon clash pour le détruire ! »", choices: [
+        { quality: "good", label: "Refuser et lui dire que ce n'est pas cool de s'acharner sur quelqu'un.", delta: 120, feedback: "Top ! Dire non à un ami quand il dépasse les bornes est très mature." },
+        { quality: "mixed", label: "Ignorer son message et faire semblant de ne pas avoir vu.", delta: 30, feedback: "Mitigé : tu n'encourages pas, mais lui dire franchement peut le stopper." },
+        { quality: "bad", label: "Aller liker et rajouter « +1 🤣 » pour lui faire plaisir.", delta: -110, feedback: "Mauvais choix ! Tu alimentes un harcèlement à deux (-110 ✨)." }
+      ]},
+      { title: "24. Montage IA / Deepfake moqueur", scenario: "Quelqu'un utilise une appli IA pour modifier le visage d'un camarade sur une image ridicule et la poste.", choices: [
+        { quality: "good", label: "Capturer l'image, la signaler sur la plateforme + au 3018 et prévenir l'élève.", delta: 130, feedback: "Parfait ! Les montages malveillants sans consentement sont punis par la loi." },
+        { quality: "mixed", label: "Ne pas la partager mais sourire devant ton écran.", delta: 20, feedback: "Mitigé : pense à ce que ressentirait la personne à ta place." },
+        { quality: "bad", label: "La mettre en photo de profil du groupe classe.", delta: -120, feedback: "Mauvais choix ! C'est une humiliation publique grave (-120 ✨)." }
+      ]},
+      { title: "25. Vocal remixé sur TikTok", scenario: "Un audio où un élève bafouille en stressant est enregistré et remixé en son TikTok moqueur.", choices: [
+        { quality: "good", label: "Signaler la vidéo + le son et soutenir l'élève.", delta: 120, feedback: "Bravo ! Moquer la voix ou le stress de quelqu'un en vidéo virale est très violent." },
+        { quality: "mixed", label: "Scroller vite sans rien faire.", delta: 25, feedback: "Mitigé : un signalement prend 5 secondes et peut tout stopper." },
+        { quality: "bad", label: "Refaire une vidéo avec ce son pour faire des vues.", delta: -115, feedback: "Mauvais choix ! Reprendre le son multiplie le harcèlement (-115 ✨)." }
+      ]},
+      { title: "26. Compte « Potins du collège »", scenario: "Un nouveau compte Instagram « @potins_college » demande en story de lui envoyer des dossiers sur les élèves.", choices: [
+        { quality: "good", label: "Signaler le compte dès sa création et prévenir le CPE / 3018.", delta: 130, feedback: "Excellent ! Bloquer ces comptes dès le début évite des semaines de harcèlement." },
+        { quality: "mixed", label: "Regarder la story par curiosité sans rien envoyer.", delta: 20, feedback: "Mitigé : la curiosité fait monter les vues de ces comptes toxiques." },
+        { quality: "bad", label: "Lui envoyer une rumeur anonyme sur un élève que tu n'aimes pas.", delta: -130, feedback: "Mauvais choix ! Tu alimentes directement une machine à harceler (-130 ✨)." }
+      ]},
+      { title: "27. Secret lourd à garder", scenario: "Un ami te confie qu'il se fait harceler tous les soirs mais te fait promettre : « Jure-moi de le dire à personne ! »", choices: [
+        { quality: "good", label: "L'écouter avec bienveillance et lui expliquer que pour l'aider vraiment, on va en parler ensemble au 3018 ou à un adulte.", delta: 135, feedback: "Parfait ! On ne garde jamais un secret quand quelqu'un est en danger." },
+        { quality: "mixed", label: "Garder le secret et juste lui dire « Bloque-les et dors ».", delta: 30, feedback: "Mitigé : tu veux bien faire, mais seul face aux harceleurs il va continuer à souffrir." },
+        { quality: "bad", label: "Raconter son problème à d'autres élèves à la récré.", delta: -115, feedback: "Mauvais choix ! Répéter sa confidence aux autres va empirer sa honte (-115 ✨)." }
+      ]},
+      { title: "28. Appels masqués tard le soir", scenario: "Un élève reçoit 20 appels en numéro masqué et SMS d'insultes tous les soirs à 23h.", choices: [
+        { quality: "good", label: "Lui conseiller de ne pas répondre, garder les preuves (journal d'appels/SMS), prévenir ses parents et appeler le 3018.", delta: 125, feedback: "Top ! Les appels malveillants répétés sont un délit puni par la loi." },
+        { quality: "mixed", label: "Juste mettre le téléphone en mode avion la nuit.", delta: 35, feedback: "Mitigé : ça permet de dormir, mais il faut aussi garder les preuves et agir." },
+        { quality: "bad", label: "Répondre et insulter au hasard.", delta: -95, feedback: "Mauvais choix ! Répondre excite ceux qui appellent (-95 ✨)." }
+      ]},
+      { title: "29. Copie de contrôle en story", scenario: "Quelqu'un prend en photo la mauvaise note d'un camarade sur la table et la met en story avec son prénom.", choices: [
+        { quality: "good", label: "Demander d'enlever la story, signaler et soutenir le camarade.", delta: 115, feedback: "Super ! Afficher les difficultés d'un autre pour l'humilier est inacceptable." },
+        { quality: "mixed", label: "Ne rien dire pour pas te faire remarquer.", delta: 25, feedback: "Mitigé : le soutien des témoins change tout." },
+        { quality: "bad", label: "Screen la story pour en rire plus tard.", delta: -105, feedback: "Mauvais choix ! Garder ça prolonge l'humiliation (-105 ✨)." }
+      ]},
+      { title: "30. Pression de groupe", scenario: "Les populaires de la classe te disent : « Si tu continues de parler à Lucas, on te vire du groupe aussi. »", choices: [
+        { quality: "good", label: "Rester fidèle à Lucas, refuser le chantage et alerter un adulte sur ce comportement.", delta: 130, feedback: "Courageux et juste ! Céder au harcèlement le rend plus fort." },
+        { quality: "mixed", label: "Parler à Lucas uniquement en cachette pour éviter les histoires.", delta: 40, feedback: "Mitigé : Lucas apprécie ton soutien, mais le groupe continue à l'isoler." },
+        { quality: "bad", label: "Bloquer Lucas immédiatement pour rester populaire.", delta: -115, feedback: "Mauvais choix ! Isoler quelqu'un sous la menace détruit la victime (-115 ✨)." }
+      ]},
+      { title: "31. Montage viral après les vacances", scenario: "À la rentrée, tout le monde parle d'un montage moqueur sur un élève qui tourne depuis 3 jours.", choices: [
+        { quality: "good", label: "Ne pas le chercher ni le regarder, soutenir l'élève et prévenir la vie scolaire + 3018.", delta: 125, feedback: "Parfait ! Ne pas chercher à voir les vidéos humiliantes coupe leur succès." },
+        { quality: "mixed", label: "Demander à voir la vidéo « juste pour savoir de quoi ils parlent ».", delta: 15, feedback: "Mitigé : demander à la voir encourage ceux qui la partagent." },
+        { quality: "bad", label: "En parler fort devant l'élève concerné pour voir sa réaction.", delta: -110, feedback: "Mauvais choix ! C'est cruel et humiliant (-110 ✨)." }
+      ]},
+      { title: "32. Menaces contre un témoin", scenario: "Tu as défendu une victime en ligne, et un harceleur t'envoie maintenant « Mêle-toi de tes affaires sinon c'est ton tour ».", choices: [
+        { quality: "good", label: "Faire une capture des menaces, ne pas répondre, bloquer et montrer tout de suite à un adulte / au 3018.", delta: 140, feedback: "Exemplaire ! Tu as bien agi en défendant l'autre, et face aux menaces on ne reste jamais seul." },
+        { quality: "mixed", label: "Supprimer ton message de soutien par peur.", delta: 30, feedback: "Mitigé : on peut comprendre la peur, mais garde les captures des menaces !" },
+        { quality: "bad", label: "Lui donner rendez-vous après les cours pour régler ça.", delta: -125, feedback: "Mauvais choix ! Répondre à la menace par la bagarre te met en danger (-125 ✨)." }
+      ]}
+    ];
+
+    /* ============================================================
+       MINI-JEU TÉLÉPHONE (6 CONVERSATIONS)
+    ============================================================ */
+    const PHONE_SCENARIOS = [
+      {
+        contact: "Léa (Ma pote) 🦊", app: "Messages • En ligne",
+        step1: {
+          incoming: "Coucou... j'ose même plus aller au collège demain, ils ont créé un faux compte avec des photos de moi 😭",
+          replies: [
+            { q: "good", text: "Je suis là pour toi Léa ❤️ Ne réponds pas au compte, fais des captures d'écran avec le lien tout de suite.", delta: 60 },
+            { q: "mixed", text: "Oh mince c'est chaud... essaie de dormir et de pas y penser ce soir.", delta: 20 },
+            { q: "bad", text: "Mdrrr laisse tomber c'est rien, va les clasher en commentaire !", delta: -40 }
+          ]
+        },
+        step2: {
+          reactions: {
+            good: "Merci d'être là... J'ai fait les captures ! Mais j'ai peur d'en parler à mes parents, tu crois que je fais quoi ?",
+            mixed: "J'arrive pas à dormir ça continue de sonner... Je fais quoi ?",
+            bad: "J'ai essayé de leur répondre et ils m'insultent encore plus fort là 😭"
+          },
+          replies: [
+            { q: "good", text: "On appelle le 3018 ensemble maintenant (c'est gratuit et anonyme) et demain je viens avec toi voir le CPE.", delta: 70 },
+            { q: "mixed", text: "Supprime ton Insta ce soir et on verra ça à la récré demain.", delta: 20 },
+            { q: "bad", text: "Laisse tomber, c'est juste Internet, ça va passer tout seul.", delta: -50 }
+          ]
+        }
+      },
+      {
+        contact: "Groupe Classe 3ème B 🏫", app: "6 participants actifs",
+        step1: {
+          incoming: "Lucas_99 : « Wesh regardez la tête de Yanis quand il court en EPS 😂😂 » [Photo postée sans accord]",
+          replies: [
+            { q: "good", text: "Supprime ça direct Lucas, on affiche pas les gens sans leur accord, c'est pas drôle.", delta: 60 },
+            { q: "mixed", text: "(Ne rien écrire et juste quitter le groupe en silence)", delta: 15 },
+            { q: "bad", text: "HAHAHA j'avoue sa tête 😂😂 j'enregistre !", delta: -50 }
+          ]
+        },
+        step2: {
+          reactions: {
+            good: "Lucas_99 : « Tranquille c'est juste pour rigoler fais pas ton rabat-joie »",
+            mixed: "Système : Vous avez quitté le groupe. Yanis vous écrit en privé : « Ils continuent de se moquer de moi... »",
+            bad: "Yanis voit le groupe et quitte la discussion complètement blessé..."
+          },
+          replies: [
+            { q: "good", text: "Faire une capture du message pour preuve, prévenir un adulte/prof et envoyer un message sympa à Yanis en privé.", delta: 70 },
+            { q: "mixed", text: "Envoyer juste « Désolé pour toi Yanis » sans prévenir personne.", delta: 25 },
+            { q: "bad", text: "Envoyer la photo à un autre pote en DM.", delta: -50 }
+          ]
+        }
+      },
+      {
+        contact: "Inconnu (@dark_x0) 👤", app: "Demande de message",
+        step1: {
+          incoming: "Salut j'ai une photo gênante de toi. Envoie 30€ par carte cadeau sinon je l'envoie à toute ta liste d'abonnés.",
+          replies: [
+            { q: "good", text: "(Ne rien payer, ne pas s'énerver : prendre des captures d'écran de son profil et du chantage !)", delta: 60 },
+            { q: "mixed", text: "Laisse-moi tranquille ! (et effacer vite la discussion par peur)", delta: 15 },
+            { q: "bad", text: "Attends stp je vais chercher ma carte pour payer !", delta: -60 }
+          ]
+        },
+        step2: {
+          reactions: {
+            good: "Inconnu : « T'as 5 minutes ou je poste tout ! »",
+            mixed: "L'inconnu t'envoie un 2e message : « T'as cru que m'effacer ça allait suffire ? »",
+            bad: "Inconnu : « Envoie encore 50€ maintenant ou je poste quand même ! »"
+          },
+          replies: [
+            { q: "good", text: "Bloquer le compte, garder les captures et appeler immédiatement le 3018 (ou le 17) + prévenir mes parents.", delta: 70 },
+            { q: "mixed", text: "Juste passer mon compte en privé et espérer qu'il oublie.", delta: 25 },
+            { q: "bad", text: "Essayer de négocier en lui envoyant d'autres infos.", delta: -50 }
+          ]
+        }
+      },
+      {
+        contact: "Noa (Gaming) 🎮", app: "Chat Vocal • En jeu",
+        step1: {
+          incoming: "Mec t'as vu comment les 2 autres insultent le petit nouveau dans le vocal ? Il ose même plus parler...",
+          replies: [
+            { q: "good", text: "Ouais c'est abusé, viens on les signale tous les deux et on invite le nouveau dans notre groupe !", delta: 60 },
+            { q: "mixed", text: "Laisse béton, mute juste le chat vocal et on joue à deux.", delta: 20 },
+            { q: "bad", text: "Bah il joue mal aussi, c'est normal qu'il se fasse tailler mdrr", delta: -45 }
+          ]
+        },
+        step2: {
+          reactions: {
+            good: "Noa : « Carrément ! Je les ai signalés, je l'invite là. Tu lui dis quoi pour qu'il se sente bien ? »",
+            mixed: "Noa : « Ouais mais le petit nous écrit qu'il veut arrêter le jeu à cause d'eux... »",
+            bad: "Noa : « Pas cool mec, il a quitté le jeu en pleurant presque... »"
+          },
+          replies: [
+            { q: "good", text: "« Bienvenue dans notre team ! Fais pas attention aux rageux, ici on joue dans le respect. »", delta: 70 },
+            { q: "mixed", text: "« Tkt ça arrive souvent, joue sans micro la prochaine fois. »", delta: 25 },
+            { q: "bad", text: "« Bon allez dégage aussi si t'es pas content. »", delta: -50 }
+          ]
+        }
+      },
+      {
+        contact: "Sarah 🦉", app: "Messages privés",
+        step1: {
+          incoming: "Regarde le nouveau compte @potins_lycee ! Quelqu'un a écrit un truc horrible sur Chloé, je l'envoie aux filles ?",
+          replies: [
+            { q: "good", text: "Surtout pas Sarah ! Partager ça va détruire Chloé. Signale le compte au lieu de faire tourner !", delta: 60 },
+            { q: "mixed", text: "Fais ce que tu veux mais me l'envoie pas à moi.", delta: 20 },
+            { q: "bad", text: "Vas-y envoie vite je veux voir ce qu'ils ont mis 👀", delta: -50 }
+          ]
+        },
+        step2: {
+          reactions: {
+            good: "Sarah : « T'as raison en vrai... J'avais pas pensé à ce que Chloé ressentirait. On fait quoi d'autre ? »",
+            mixed: "Sarah : « OK... mais j'ai vu que 20 personnes partagent déjà le truc... »",
+            bad: "Sarah t'envoie la capture et la rumeur tourne encore plus vite dans le lycée."
+          },
+          replies: [
+            { q: "good", text: "On fait une capture du compte potins pour le signaler (appli + PHAROS + 3018) et on envoie du soutien à Chloé.", delta: 70 },
+            { q: "mixed", text: "On bloque juste le compte potins sans rien dire à Chloé.", delta: 25 },
+            { q: "bad", text: "On crée un autre compte pour clasher celui qui gère les potins.", delta: -50 }
+          ]
+        }
+      },
+      {
+        contact: "Théo 🛡️", app: "Messages privés",
+        step1: {
+          incoming: "Aide-moi stp, j'ai défendu un pote contre des harceleurs en ligne et maintenant ils menacent de m'attendre à la sortie...",
+          replies: [
+            { q: "good", text: "Reste pas seul Théo ! Fais des captures de toutes leurs menaces tout de suite sans leur répondre.", delta: 60 },
+            { q: "mixed", text: "Supprime ton commentaire de soutien comme ça ils vont t'oublier.", delta: 20 },
+            { q: "bad", text: "Va à la sortie avec des potes pour te battre avec eux !", delta: -55 }
+          ]
+        },
+        step2: {
+          reactions: {
+            good: "Théo : « C'est bon j'ai toutes les captures ! Je préviens qui maintenant ? »",
+            mixed: "Théo : « J'ai supprimé mais ils continuent de m'envoyer des menaces en DM... »",
+            bad: "Théo : « Non je veux pas me battre, j'ai vraiment peur là... »"
+          },
+          replies: [
+            { q: "good", text: "Montre les captures à tes parents + au CPE dès maintenant, et appelez le 3018 (ou le 17 si danger immédiat).", delta: 70 },
+            { q: "mixed", text: "Rentre juste par un autre chemin pendant une semaine sans rien dire.", delta: 20 },
+            { q: "bad", text: "Réponds-leur des insultes pour leur faire peur.", delta: -50 }
+          ]
+        }
+      }
+    ];
+
+    const MODERATION_MESSAGES = [
+      { text: "T'es trop gênant, supprime ton compte 😂", toxic: true },
+      { text: "Trop bien ta vidéo, lâche rien ! 💪", toxic: false },
+      { text: "Personne t'aime au collège mdr", toxic: true },
+      { text: "On va tous afficher ta photo demain", toxic: true },
+      { text: "Merci pour ton aide sur le devoir !", toxic: false },
+      { text: "T'es vraiment moche sur cette story 🤮", toxic: true },
+      { text: "Courage, on est avec toi 🤝", toxic: false },
+      { text: "Dégage du serveur, t'as pas d'amis", toxic: true },
+      { text: "Stylé ton montage, bravo ! 🌟", toxic: false },
+      { text: "On va balancer ton numéro en commentaire", toxic: true }
+    ];
+
+    const QUIZ_QUESTIONS = [
+      { q: "Quel est le numéro gratuit et anonyme pour aider les jeunes face au cyberharcèlement ?", opts: ["Le 3018", "Le 118 218", "Le 1014"], ans: 0, exp: "Le 3018 est gratuit, anonyme et ouvert 7j/7 de 9h à 23h (téléphone ou appli 3018)." },
+      { q: "Avant de bloquer quelqu'un qui t'insulte en ligne, que faut-il faire d'abord ?", opts: ["L'insulter aussi", "Faire des captures d'écran datées", "Supprimer son propre compte"], ans: 1, exp: "Les captures d'écran avec la date et le pseudo sont les preuves indispensables !" },
+      { q: "Liker ou partager une vidéo moqueuse publiée sans l'accord d'un élève :", opts: ["Est sans gravité", "Aggrave le harcèlement et peut être puni", "Efface la vidéo"], ans: 1, exp: "Partager ou liker participe à l'effet de meute et augmente la souffrance de la victime." },
+      { q: "À quoi sert le site officiel PHAROS ?", opts: ["Signaler les menaces et contenus illicites sur Internet", "Télécharger des jeux gratuits", "Retrouver un téléphone"], ans: 0, exp: "PHAROS (internet-signalement.gouv.fr) permet d'alerter la police sur les contenus graves." },
+      { q: "Créer un faux profil au nom d'un camarade pour se moquer de lui est :", opts: ["Une simple blague légale", "Un délit puni par la loi", "Autorisé si c'est anonyme"], ans: 1, exp: "L'usurpation d'identité pour nuire à quelqu'un est un délit pénal." },
+      { q: "Si tu es témoin de harcèlement dans un groupe de classe, qu'est-ce qui aide le plus ?", opts: ["Soutenir la victime en privé et prévenir un adulte", "Rire pour ne pas être visé", "Ne rien dire à personne"], ans: 0, exp: "Un seul message de soutien brise la solitude de la victime." }
+    ];
+
+    const TIPS = [
+      "Le 3018 est gratuit, anonyme et confidentiel (7j/7, 9h-23h) : par téléphone ou tchat sur l'app 3018.",
+      "Fais toujours des captures d'écran (avec pseudo et date) avant de bloquer un harceleur.",
+      "Ne transfère jamais une photo gênante ou une rumeur : ne pas partager, c'est déjà protéger.",
+      "Un petit message gentil en privé à quelqu'un qui se fait moquer peut tout changer."
+    ];
+
+    const AVATARS = ["🕊️", "🦊", "🦉", "🛡️"];
+    const PLAYER_COLORS = ["#38bdf8", "#fb7185", "#34d399", "#fbbf24"];
+    const WIN_GOAL = 2500;
+
+    /* ============================================================
+       VARIABLES & LOGIQUE DES DÉS (PROPRES ET CENTRALISÉES)
+    ============================================================ */
+    const DICE_CONFIG = {
+      minFace: 1,
+      maxFace: 6,
+      rollDurationMs: 480,
+      animStepMs: 75,
+      maxConsecutiveDoubles: 3,
+      doubleBonus: 30
+    };
+
+    const DICE_PIP_PATTERNS = {
+      1: [4],
+      2: [0, 8],
+      3: [0, 4, 8],
+      4: [0, 2, 6, 8],
+      5: [0, 2, 4, 6, 8],
+      6: [0, 2, 3, 5, 6, 8]
+    };
+
+    let diceState = {
+      die1: 6,
+      die2: 6,
+      total: 12,
+      isDouble: false,
+      doublesStreak: 0
+    };
+
+    function getRandomDieFace() {
+      const span = DICE_CONFIG.maxFace - DICE_CONFIG.minFace + 1;
+      if (window.crypto && window.crypto.getRandomValues) {
+        const arr = new Uint32Array(1);
+        window.crypto.getRandomValues(arr);
+        return DICE_CONFIG.minFace + (arr[0] % span);
+      }
+      return DICE_CONFIG.minFace + Math.floor(Math.random() * span);
+    }
+
+    function renderDieFace(el, val) {
+      if (!el) return;
+      const active = DICE_PIP_PATTERNS[val] || DICE_PIP_PATTERNS[1];
+      el.innerHTML = "";
+      for (let i = 0; i < 9; i++) {
+        const pip = document.createElement("span");
+        pip.className = "pip" + (active.includes(i) ? " on" : "");
+        el.appendChild(pip);
+      }
+    }
+
+    function renderDiceUI(rolling = false) {
+      const d1El = document.getElementById("die-1");
+      const d2El = document.getElementById("die-2");
+      const totalBadge = document.getElementById("dice-total-badge");
+
+      renderDieFace(d1El, diceState.die1);
+      renderDieFace(d2El, diceState.die2);
+
+      if (d1El && d2El) {
+        d1El.classList.toggle("rolling", rolling);
+        d2El.classList.toggle("rolling", rolling);
+        const highlightDouble = !rolling && diceState.isDouble;
+        d1El.classList.toggle("double-glow", highlightDouble);
+        d2El.classList.toggle("double-glow", highlightDouble);
+      }
+
+      if (totalBadge) {
+        totalBadge.textContent = rolling
+          ? "..."
+          : `= ${diceState.total}${diceState.isDouble ? " ✨" : ""}`;
+      }
+    }
+
+    /* ============================================================
+       ÉTAT GLOBAL & GESTION DES SESSIONS
+    ============================================================ */
+    let setupMode = "solo";
+    let setupCount = 3;
+    let activeIntervals = [];
+
+    let state = {
+      sessionId: 0,
+      players: [],
+      tiles: [],
+      currentIdx: 0,
+      cagnotte: 0,
+      turnCount: 1,
+      usedEvents: [],
+      hasRolled: false,
+      busy: false,
+      gameOver: false
+    };
+
+    const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+    function clearAllIntervals() {
+      activeIntervals.forEach(id => clearInterval(id));
+      activeIntervals = [];
+    }
+
+    /* ============================================================
+       SETUP UI
+    ============================================================ */
+    function selectMode(mode) {
+      setupMode = mode;
+      document.getElementById("mode-solo").classList.toggle("active", mode === "solo");
+      document.getElementById("mode-multi").classList.toggle("active", mode === "multi");
+      renderSetupPlayers();
+    }
+
+    function setPlayerCount(n) {
+      setupCount = n;
+      document.querySelectorAll(".count-btn").forEach(b => b.classList.toggle("active", Number(b.textContent) === n));
+      renderSetupPlayers();
+    }
+
+    function renderSetupPlayers() {
+      document.getElementById("count-subtitle").textContent = setupMode === "solo"
+        ? `1 Humain + ${setupCount - 1} IA`
+        : `${setupCount} Joueurs sur le même écran`;
+
+      const container = document.getElementById("players-config");
+      container.innerHTML = "";
+
+      for (let i = 0; i < setupCount; i++) {
+        const isBot = setupMode === "solo" && i > 0;
+        const defaultName = isBot ? `IA ${i}` : `Joueur ${i + 1}`;
+        const box = document.createElement("div");
+        box.className = "player-setup-box";
+        box.innerHTML = `
+          <label>
+            <span>${isBot ? "🤖 Ordi" : "👤 Joueur"}</span>
+            <span style="color:${PLAYER_COLORS[i]};">Pion ${i + 1}</span>
+          </label>
+          <input type="text" id="pname-${i}" value="${defaultName}" maxlength="14" placeholder="Prénom / Pseudo" />
+          <select id="pavatar-${i}">
+            ${AVATARS.map((av, idx) => `<option value="${av}" ${idx === i ? "selected" : ""}>${av} Avatar ${idx + 1}</option>`).join("")}
+          </select>
+        `;
+        container.appendChild(box);
+      }
+    }
+
+    function startGame() {
+      clearAllIntervals();
+      closeGameModal();
+      closeInfoModal();
+
+      const players = [];
+      for (let i = 0; i < setupCount; i++) {
+        const name = (document.getElementById(`pname-${i}`).value || `Joueur ${i+1}`).trim();
+        const avatar = document.getElementById(`pavatar-${i}`).value;
+        players.push({
+          id: i, name, avatar,
+          color: PLAYER_COLORS[i],
+          isBot: setupMode === "solo" && i > 0,
+          balance: 1200,
+          pos: 0,
+          streak: 0,
+          inJail: false,
+          jailTurns: 0,
+          bankrupt: false
+        });
+      }
+
+      const nextSession = state.sessionId + 1;
+      state = {
+        sessionId: nextSession,
+        players,
+        tiles: BOARD_TILES.map(t => ({ ...t, owner: null, shields: 0 })),
+        currentIdx: 0,
+        cagnotte: 0,
+        turnCount: 1,
+        usedEvents: [],
+        hasRolled: false,
+        busy: false,
+        gameOver: false
+      };
+
+      diceState = { die1: 6, die2: 6, total: 12, isDouble: false, doublesStreak: 0 };
+
+      document.getElementById("setup-screen").style.display = "none";
+      document.getElementById("game-screen").classList.add("active");
+      document.getElementById("btn-restart").style.display = "inline-block";
+
+      renderDiceUI(false);
+      buildBoardDOM();
+      updateUI();
+      playSound("good");
+      setLastAction("✨ C'est parti ! Atteins <strong>2 500 ✨</strong> ou reste le dernier en jeu !");
+      rotateTip();
+
+      if (currentPlayer().isBot) {
+        setTimeout(() => runBotTurn(nextSession), 850);
+      }
+    }
+
+    function confirmRestart() {
+      openInfoModal(
+        "Recommencer ?",
+        "Veux-tu quitter cette partie et revenir à l'accueil ?",
+        [
+          { label: "Annuler", cls: "btn-ghost", onClick: closeInfoModal },
+          { label: "Oui, quitter", cls: "btn-danger", onClick: () => {
+            clearAllIntervals();
+            state.sessionId++;
+            state.gameOver = true;
+            state.busy = false;
+            closeInfoModal();
+            closeGameModal();
+            document.getElementById("game-screen").classList.remove("active");
+            document.getElementById("setup-screen").style.display = "block";
+            document.getElementById("btn-restart").style.display = "none";
+          }}
+        ]
+      );
+    }
+
+    function currentPlayer() { return state.players[state.currentIdx]; }
+    function rotateTip() { document.getElementById("daily-tip").textContent = TIPS[Math.floor(Math.random() * TIPS.length)]; }
+    function setLastAction(html) { document.getElementById("last-action").innerHTML = html; }
+
+    function updateStreak(p, isGood) {
+      if (state.gameOver) return;
+      if (isGood) {
+        p.streak++;
+        if (p.streak >= 3) {
+          p.streak = 0;
+          p.balance += 150;
+          playSound("good");
+          showToast(`🔥 SÉRIE DE 3 BONS RÉFLEXES ! +150 ✨ pour ${p.name} !`);
+          setLastAction(`🔥 <strong>${p.name}</strong> enchaîne 3 bons réflexes : <strong>+150 ✨ Bonus !</strong>`);
+        }
+      } else {
+        p.streak = 0;
+      }
+      updateUI();
+      checkWinCondition();
+    }
+
+    /* ============================================================
+       PLATEAU ORBITAL (24 BULLES)
+    ============================================================ */
+    function buildBoardDOM() {
+      const layer = document.getElementById("nodes-layer");
+      layer.innerHTML = "";
+      const total = state.tiles.length;
+      const radius = 42.8;
+
+      state.tiles.forEach((tile, idx) => {
+        const angle = Math.PI / 2 + (idx / total) * Math.PI * 2;
+        const x = 50 + radius * Math.cos(angle);
+        const y = 50 + radius * Math.sin(angle);
+
+        const isMilestone = ["go", "jail", "free", "gotojail"].includes(tile.type);
+        const extraCls = tile.type === "unexpected" ? "unexpected-tile" : (tile.type === "phone" ? "phone-tile" : "");
+        const el = document.createElement("div");
+        el.className = `orbit-node ${isMilestone ? "milestone" : ""} ${extraCls}`;
+        el.id = `tile-${tile.id}`;
+        el.style.left = `${x}%`;
+        el.style.top = `${y}%`;
+        el.onclick = () => inspectTile(tile.id);
+
+        if (tile.type === "prop" || tile.type === "service") {
+          const c = COLOR_MAP[tile.group].hex;
+          el.innerHTML = `
+            <span class="node-num">${tile.id + 1}</span>
+            <div class="node-bar" style="background:${c};"></div>
+            <div class="node-shields" id="shields-${tile.id}" style="display:none;"></div>
+            <div class="node-icon">${tile.icon}</div>
+            <div class="node-name">${tile.name}</div>
+            <div class="node-price">${tile.price} ✨</div>
+          `;
+        } else {
+          el.innerHTML = `
+            <span class="node-num">${tile.id + 1}</span>
+            <div class="node-icon">${tile.icon}</div>
+            <div class="node-name">${tile.name}</div>
+            ${tile.amount ? `<div class="node-price">-${tile.amount} ✨</div>` : ""}
+          `;
+        }
+
+        const tokensDiv = document.createElement("div");
+        tokensDiv.className = "node-tokens";
+        tokensDiv.id = `tokens-${tile.id}`;
+        el.appendChild(tokensDiv);
+        layer.appendChild(el);
+      });
+    }
+
+    function updateUI() {
+      document.getElementById("cagnotte-val").textContent = `${state.cagnotte} ✨`;
+
+      const cp = currentPlayer();
+      if (!cp) return;
+      const avatarEl = document.getElementById("turn-avatar");
+      avatarEl.textContent = cp.avatar;
+      avatarEl.style.background = cp.color;
+      document.getElementById("turn-name").textContent = cp.name + (cp.isBot ? " (IA)" : "");
+      document.getElementById("turn-balance").textContent = `${cp.balance} ✨`;
+      document.getElementById("turn-status").textContent = cp.isBot
+        ? "🤖 L'IA joue son tour..."
+        : (cp.inJail ? `🔒 Compte isolé (${cp.jailTurns + 1}/2)` : (state.hasRolled ? "Pose des boucliers ou passe !" : "Appuie sur Lancer !"));
+
+      const humanTurn = !cp.isBot && !cp.bankrupt && !state.busy && !state.gameOver;
+      document.getElementById("btn-roll").disabled = !humanTurn || state.hasRolled;
+      document.getElementById("btn-end-turn").disabled = !humanTurn || !state.hasRolled;
+      document.getElementById("btn-manage").disabled = !humanTurn;
+
+      state.tiles.forEach(tile => {
+        const el = document.getElementById(`tile-${tile.id}`);
+        if (!el) return;
+        el.classList.toggle("active-pos", !cp.bankrupt && cp.pos === tile.id);
+        el.style.borderColor = tile.owner !== null ? state.players[tile.owner].color : "";
+
+        const sh = document.getElementById(`shields-${tile.id}`);
+        if (sh) {
+          if (tile.shields > 0) { sh.style.display = "block"; sh.textContent = "🛡️".repeat(tile.shields); }
+          else { sh.style.display = "none"; }
+        }
+        document.getElementById(`tokens-${tile.id}`).innerHTML = "";
+      });
+
+      state.players.forEach(p => {
+        if (p.bankrupt) return;
+        const tBox = document.getElementById(`tokens-${p.pos}`);
+        if (!tBox) return;
+        const chip = document.createElement("div");
+        chip.className = `token-chip ${p.id === state.currentIdx ? "active-turn" : ""}`;
+        chip.style.background = p.color;
+        chip.textContent = p.avatar;
+        tBox.appendChild(chip);
+      });
+
+      const list = document.getElementById("players-list");
+      list.innerHTML = "";
+      state.players.forEach(p => {
+        const owned = state.tiles.filter(t => t.owner === p.id);
+        const pct = Math.max(4, Math.min(100, Math.round((p.balance / WIN_GOAL) * 100)));
+        const card = document.createElement("div");
+        card.className = `player-card ${p.id === state.currentIdx ? "active" : ""} ${p.bankrupt ? "bankrupt" : ""}`;
+        card.innerHTML = `
+          <div class="player-card-top">
+            <div class="player-identity">
+              <span style="display:inline-flex;width:28px;height:28px;border-radius:50%;background:${p.color};color:#0f172a;align-items:center;justify-content:center;">${p.avatar}</span>
+              <span>${p.name}</span>
+            </div>
+            <div class="player-money">${p.bankrupt ? "Éliminé" : p.balance + " ✨"}</div>
+          </div>
+          <div class="player-tags">
+            ${p.isBot ? `<span class="tag">🤖 IA</span>` : `<span class="tag">👤 Humain</span>`}
+            ${p.streak > 0 ? `<span class="tag streak">🔥 Série ${p.streak}/3</span>` : ""}
+            ${p.inJail ? `<span class="tag jail">🔒 Isolé</span>` : ""}
+            <span class="tag">${owned.length} espace(s)</span>
+          </div>
+          ${!p.bankrupt ? `<div class="win-bar-wrap" title="${p.balance} / ${WIN_GOAL} ✨"><div class="win-bar" style="width:${pct}%; background:${p.color};"></div></div>` : ""}
+          <div class="prop-mini-list">
+            ${owned.map(t => `<span class="prop-pill" style="background:${COLOR_MAP[t.group].hex}" onclick="inspectTile(${t.id})">${t.name}</span>`).join("")}
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    /* ============================================================
+       LANCER DES 2 DÉS & DÉPLACEMENT
+    ============================================================ */
+    async function handleRollClick() {
+      const p = currentPlayer();
+      if (!p || state.busy || state.hasRolled || p.isBot || p.bankrupt || state.gameOver) return;
+      if (p.inJail) { openJailOptionsModal(p); return; }
+      await rollDiceAndMove(p, state.sessionId);
+    }
+
+    async function rollDiceAndMove(p, sid) {
+      if (sid !== state.sessionId || state.gameOver) return;
+      state.busy = true;
+      let canRollAgain = false;
+      let animTimer = null;
+      updateUI();
+
+      try {
+        playSound("roll");
+        animTimer = setInterval(() => {
+          diceState.die1 = getRandomDieFace();
+          diceState.die2 = getRandomDieFace();
+          renderDiceUI(true);
+        }, DICE_CONFIG.animStepMs);
+        activeIntervals.push(animTimer);
+
+        await sleep(DICE_CONFIG.rollDurationMs);
+        clearInterval(animTimer);
+        animTimer = null;
+
+        if (sid !== state.sessionId) return;
+
+        // Tirage final des 2 dés
+        diceState.die1 = getRandomDieFace();
+        diceState.die2 = getRandomDieFace();
+        diceState.total = diceState.die1 + diceState.die2;
+        diceState.isDouble = diceState.die1 === diceState.die2;
+        renderDiceUI(false);
+
+        if (p.inJail) {
+          if (diceState.isDouble) {
+            p.inJail = false;
+            p.jailTurns = 0;
+            diceState.doublesStreak = 0;
+            playSound("good");
+            showToast(`🎲 Double ${diceState.die1}+${diceState.die2} ! ${p.name} sort d'isolement !`);
+            setLastAction(`🎲 <strong>${p.name}</strong> fait un double (${diceState.die1}+${diceState.die2}) et sort !`);
+            await stepMove(p, diceState.total, sid);
+            if (sid !== state.sessionId) return;
+            await handleLanding(p, sid);
+          } else {
+            p.jailTurns++;
+            setLastAction(`🔒 <strong>${p.name}</strong> fait ${diceState.die1}+${diceState.die2} (il faut un double).`);
+            if (p.jailTurns >= 2) {
+              p.inJail = false;
+              p.jailTurns = 0;
+              setLastAction(`🔓 Fin de pause pour <strong>${p.name}</strong> (${diceState.total} cases).`);
+              await stepMove(p, diceState.total, sid);
+              if (sid !== state.sessionId) return;
+              await handleLanding(p, sid);
+            }
+          }
+        } else {
+          if (diceState.isDouble) {
+            diceState.doublesStreak++;
+            if (diceState.doublesStreak >= DICE_CONFIG.maxConsecutiveDoubles) {
+              playSound("bad");
+              diceState.doublesStreak = 0;
+              showToast(`🚨 3 doubles d'affilée ! ${p.name} passe en Compte Isolé !`);
+              setLastAction(`🚨 <strong>${p.name}</strong> fait 3 doubles de suite -> <strong>Compte Isolé</strong> !`);
+              sendToJail(p);
+            } else {
+              p.balance += DICE_CONFIG.doubleBonus;
+              playSound("good");
+              showToast(`✨ Double ${diceState.die1}+${diceState.die2} ! +${DICE_CONFIG.doubleBonus} ✨ et rejoue !`);
+              setLastAction(`🎲 <strong>${p.name}</strong> fait un <strong>Double (${diceState.die1}+${diceState.die2})</strong> : +${DICE_CONFIG.doubleBonus} ✨ !`);
+              await stepMove(p, diceState.total, sid);
+              if (sid !== state.sessionId) return;
+              if (!state.gameOver) await handleLanding(p, sid);
+              if (!p.bankrupt && !p.inJail && !state.gameOver) {
+                canRollAgain = true;
+              }
+            }
+          } else {
+            diceState.doublesStreak = 0;
+            setLastAction(`🎲 <strong>${p.name}</strong> fait <strong>${diceState.die1} + ${diceState.die2} = ${diceState.total}</strong>.`);
+            await stepMove(p, diceState.total, sid);
+            if (sid !== state.sessionId) return;
+            if (!state.gameOver) await handleLanding(p, sid);
+          }
+        }
+      } finally {
+        if (animTimer) clearInterval(animTimer);
+        if (sid === state.sessionId) {
+          state.hasRolled = !canRollAgain;
+          state.busy = false;
+          updateUI();
+          checkWinCondition();
+          if (!state.gameOver && !p.isBot && p.bankrupt) {
+            setTimeout(() => { if (sid === state.sessionId && !state.gameOver) endTurn(); }, 650);
+          }
+        }
+      }
+    }
+
+    async function stepMove(p, steps, sid) {
+      const len = state.tiles.length;
+      for (let i = 0; i < steps; i++) {
+        if (sid !== state.sessionId) return;
+        p.pos = (p.pos + 1) % len;
+        playSound("step");
+        if (p.pos === 0) {
+          p.balance += 150;
+          playSound("good");
+          showToast(`🕊️ ${p.name} passe par DÉPART : +150 ✨ !`);
+        }
+        updateUI();
+        await sleep(145);
+      }
+      await sleep(180);
+    }
+
+    function sendToJail(p) {
+      const jailIdx = state.tiles.findIndex(t => t.type === "jail");
+      p.pos = jailIdx >= 0 ? jailIdx : 6;
+      p.inJail = true;
+      p.jailTurns = 0;
+      diceState.doublesStreak = 0;
+      updateUI();
+    }
+
+    /* ============================================================
+       ARRIVÉE SUR UNE CASE
+    ============================================================ */
+    async function handleLanding(p, sid) {
+      if (sid !== state.sessionId || state.gameOver) return;
+      const tile = state.tiles[p.pos];
+
+      if (tile.type === "prop" || tile.type === "service") {
+        if (tile.owner === null) {
+          if (p.balance >= tile.price) {
+            if (p.isBot) {
+              if (p.balance >= tile.price + 60) buyTile(p, tile);
+              else setLastAction(`🤖 <strong>${p.name}</strong> garde ses ✨.`);
+            } else {
+              await askHumanToBuy(p, tile);
+            }
+          } else {
+            setLastAction(`💸 <strong>${p.name}</strong> n'a pas assez pour protéger ${tile.name}.`);
+          }
+        } else if (tile.owner === p.id) {
+          setLastAction(`✅ <strong>${p.name}</strong> est chez lui sur <strong>${tile.name}</strong>.`);
+        } else {
+          const owner = state.players[tile.owner];
+          const rent = calculateRent(tile);
+          playSound("warn");
+          setLastAction(`🛡️ <strong>${p.name}</strong> donne <strong>${rent} ✨</strong> à <strong>${owner.name}</strong> (${tile.name}).`);
+          showToast(`💸 -${rent} ✨ pour ${owner.name}`);
+          await payAmount(p, rent, owner, `Passage sur ${tile.name}`);
+        }
+      } else if (tile.type === "unexpected") {
+        await triggerUnexpectedEvent(p, sid);
+      } else if (tile.type === "phone") {
+        await runPhoneMiniGame(p, sid);
+      } else if (tile.type === "minigame") {
+        await runModerationMiniGame(p, sid);
+      } else if (tile.type === "quiz") {
+        await resolveQuizTile(p, sid);
+      } else if (tile.type === "tax") {
+        playSound("bad");
+        showToast(`🗣️ ${p.name} verse -${tile.amount} ✨ à la Cagnotte`);
+        setLastAction(`🗣️ <strong>${p.name}</strong> verse <strong>${tile.amount} ✨</strong> à la Cagnotte.`);
+        state.cagnotte += tile.amount;
+        await payAmount(p, tile.amount, null, tile.name);
+      } else if (tile.type === "free") {
+        if (state.cagnotte > 0) {
+          playSound("good");
+          showToast(`🌿 ${p.name} gagne la Cagnotte : +${state.cagnotte} ✨ !`);
+          setLastAction(`🌿 <strong>${p.name}</strong> gagne toute la Cagnotte : <strong>+${state.cagnotte} ✨</strong> !`);
+          p.balance += state.cagnotte;
+          state.cagnotte = 0;
+        } else {
+          setLastAction(`🌿 <strong>${p.name}</strong> fait une pause loin des écrans.`);
+        }
+      } else if (tile.type === "gotojail") {
+        playSound("bad");
+        showToast(`🛑 ${p.name} passe en Compte Isolé !`);
+        setLastAction(`🛑 <strong>${p.name}</strong> participe à un raid -> <strong>Compte Isolé</strong> !`);
+        if (!p.isBot) await showSimpleAlert("🛑 Raid de haine !", "Tu es envoyé en <strong>Compte Isolé</strong>.");
+        sendToJail(p);
+      }
+    }
+
+    function calculateRent(tile) {
+      if (tile.type === "service") {
+        const count = state.tiles.filter(t => t.type === "service" && t.owner === tile.owner).length;
+        return count === 2 ? 100 : 50;
+      }
+      const baseRent = tile.rents[tile.shields];
+      const duo = state.tiles.filter(t => t.group === tile.group).every(t => t.owner === tile.owner);
+      return duo ? Math.round(baseRent * 1.5) : baseRent;
+    }
+
+    function buyTile(p, tile) {
+      p.balance -= tile.price;
+      tile.owner = p.id;
+      playSound("buy");
+      showToast(`🛡️ ${p.name} protège ${tile.name} !`);
+      setLastAction(`🛡️ <strong>${p.name}</strong> protège <strong>${tile.name}</strong> (-${tile.price} ✨).`);
+      updateUI();
+    }
+
+    function askHumanToBuy(p, tile) {
+      return new Promise(resolve => {
+        const g = COLOR_MAP[tile.group];
+        let info = tile.type === "prop"
+          ? `<table class="rent-table">
+              <tr><td>Sans bouclier</td><td>${tile.rents[0]} ✨</td></tr>
+              <tr><td>1 Bouclier 🛡️</td><td>${tile.rents[1]} ✨</td></tr>
+              <tr><td>2 Boucliers 🛡️🛡️</td><td>${tile.rents[2]} ✨</td></tr>
+              <tr><td>3 Boucliers 🛡️🛡️🛡️</td><td>${tile.rents[3]} ✨</td></tr>
+            </table>
+            <p style="font-size:0.8rem;color:var(--mint);margin-top:6px;">Avoir les 2 espaces de cette couleur donne +50% sur les loyers !</p>`
+          : `<p style="font-size:0.85rem;color:var(--muted);">Rapporte 50 ✨ (ou 100 ✨ si tu as les 2 services d'aide).</p>`;
+
+        openGameModal(
+          `${tile.icon} Protéger : ${tile.name}`,
+          `
+            <div style="border-left:4px solid ${g.hex}; padding-left:12px; margin-bottom:10px;">
+              <strong>${g.label}</strong><br/>
+              <span style="color:var(--muted); font-size:0.88rem;">${tile.desc}</span>
+            </div>
+            <p>Prix : <strong style="color:var(--mint);">${tile.price} ✨</strong> (Tu as : ${p.balance} ✨)</p>
+            ${info}
+          `,
+          [
+            { label: "Passer", cls: "btn-ghost", onClick: () => { closeGameModal(); resolve(); } },
+            { label: `Acheter (-${tile.price} ✨)`, cls: "btn-success", onClick: () => { buyTile(p, tile); closeGameModal(); resolve(); } }
+          ],
+          false
+        );
+      });
+    }
+
+    /* ============================================================
+       MINI-JEU TÉLÉPHONE INTERACTIF
+    ============================================================ */
+    function runPhoneMiniGame(p, sid) {
+      const sc = PHONE_SCENARIOS[Math.floor(Math.random() * PHONE_SCENARIOS.length)];
+
+      if (p.isBot) {
+        const gain = [40, 80, 120][Math.floor(Math.random() * 3)];
+        p.balance += gain;
+        setLastAction(`📱 <strong>${p.name}</strong> répond aux messages sur son téléphone (+${gain} ✨).`);
+        updateUI();
+        return Promise.resolve();
+      }
+
+      playSound("msg");
+      return new Promise(resolve => {
+        const modalBox = document.getElementById("game-modal-box");
+        modalBox.classList.add("phone-mode");
+
+        openGameModal(
+          "Téléphone",
+          `
+            <div class="phone-notch"><span></span></div>
+            <div class="phone-statusbar"><span>9:41</span><span>5G 🔋 94%</span></div>
+            <div class="phone-app-header">
+              <div class="phone-contact-av">💬</div>
+              <div>
+                <div style="font-weight:800;font-size:0.95rem;">${sc.contact}</div>
+                <div style="font-size:0.74rem;color:#34d399;">${sc.app}</div>
+              </div>
+            </div>
+            <div class="phone-chat-area" id="phone-chat"></div>
+            <div class="phone-replies" id="phone-replies"></div>
+          `,
+          [],
+          false
+        );
+
+        const chat = document.getElementById("phone-chat");
+        const repliesBox = document.getElementById("phone-replies");
+        let totalScore = 0;
+        let goodCount = 0;
+
+        const addBubble = (text, who) => {
+          const b = document.createElement("div");
+          b.className = `bubble ${who}`;
+          b.textContent = text;
+          chat.appendChild(b);
+          chat.scrollTop = chat.scrollHeight;
+          return b;
+        };
+
+        const showTypingThen = async (text) => {
+          if (sid !== state.sessionId) return;
+          const typ = addBubble("est en train d'écrire...", "in typing");
+          await sleep(600);
+          if (sid !== state.sessionId) return;
+          typ.remove();
+          playSound("msg");
+          addBubble(text, "in");
+        };
+
+        const presentChoices = (choices, onPick) => {
+          repliesBox.innerHTML = "";
+          const shuffled = [...choices].sort(() => Math.random() - 0.5);
+          shuffled.forEach(ch => {
+            const btn = document.createElement("button");
+            btn.className = "phone-reply-btn";
+            btn.textContent = ch.text;
+            btn.onclick = () => {
+              repliesBox.querySelectorAll("button").forEach(b => b.disabled = true);
+              onPick(ch);
+            };
+            repliesBox.appendChild(btn);
+          });
+        };
+
+        (async () => {
+          await showTypingThen(sc.step1.incoming);
+          if (sid !== state.sessionId) { resolve(); return; }
+
+          presentChoices(sc.step1.replies, async (ch1) => {
+            repliesBox.innerHTML = "<div style='text-align:center;font-size:0.8rem;color:#94a3b8;padding:8px;'>Message envoyé...</div>";
+            addBubble(ch1.text, "out");
+            totalScore += ch1.delta;
+            if (ch1.q === "good") { goodCount++; playSound("buy"); }
+            else if (ch1.q === "bad") playSound("bad");
+            else playSound("warn");
+
+            await sleep(260);
+            await showTypingThen(sc.step2.reactions[ch1.q]);
+            if (sid !== state.sessionId) { resolve(); return; }
+
+            presentChoices(sc.step2.replies, (ch2) => {
+              addBubble(ch2.text, "out");
+              totalScore += ch2.delta;
+              if (ch2.q === "good") goodCount++;
+
+              const isGreat = goodCount === 2;
+              const color = totalScore > 50 ? "var(--mint)" : (totalScore >= 0 ? "var(--amber)" : "var(--danger)");
+              repliesBox.innerHTML = `
+                <div style="text-align:center; padding:8px; font-size:0.88rem;">
+                  <strong style="color:${color}; font-size:1rem;">${totalScore >= 0 ? "+" : ""}${totalScore} ✨</strong><br/>
+                  <span style="color:#cbd5e1; font-size:0.8rem;">
+                    ${isGreat ? "🔥 Réponses parfaites ! Tu as vraiment aidé." : (totalScore >= 0 ? "👍 Pas mal, tu peux encore mieux soutenir." : "⚠️ Attention : certaines réponses aggravent la situation.")}
+                  </span>
+                </div>
+              `;
+
+              const actions = document.getElementById("game-modal-actions");
+              const doneBtn = document.createElement("button");
+              doneBtn.className = "btn-primary";
+              doneBtn.textContent = "Fermer le téléphone";
+              doneBtn.onclick = async () => {
+                closeGameModal();
+                if (totalScore >= 0) {
+                  p.balance += totalScore;
+                  setLastAction(`📱 <strong>${p.name}</strong> répond aux messages : <strong>+${totalScore} ✨</strong> !`);
+                  updateStreak(p, isGreat);
+                } else {
+                  const loss = Math.abs(totalScore);
+                  state.cagnotte += loss;
+                  setLastAction(`📱 <strong>${p.name}</strong> fait des erreurs dans ses messages (<strong>-${loss} ✨</strong>).`);
+                  updateStreak(p, false);
+                  await payAmount(p, loss, null, "Mauvaises réponses en messages");
+                }
+                resolve();
+              };
+              actions.appendChild(doneBtn);
+            });
+          });
+        })();
+      });
+    }
+
+    /* ============================================================
+       32 ÉVÉNEMENTS INATTENDUS
+    ============================================================ */
+    function getNextUnexpectedEvent() {
+      if (state.usedEvents.length >= UNEXPECTED_EVENTS.length) state.usedEvents = [];
+      const available = UNEXPECTED_EVENTS.map((_, i) => i).filter(i => !state.usedEvents.includes(i));
+      const pickIdx = available[Math.floor(Math.random() * available.length)];
+      state.usedEvents.push(pickIdx);
+      return UNEXPECTED_EVENTS[pickIdx];
+    }
+
+    function triggerUnexpectedEvent(p, sid) {
+      const ev = getNextUnexpectedEvent();
+      const shuffled = [...ev.choices].sort(() => Math.random() - 0.5);
+
+      if (p.isBot) {
+        const pick = shuffled[Math.floor(Math.random() * shuffled.length)];
+        setLastAction(`⚠️ Événement Inattendu (${ev.title}) pour <strong>${p.name}</strong> : ${pick.delta >= 0 ? "+" : ""}${pick.delta} ✨.`);
+        if (pick.delta >= 0) { p.balance += pick.delta; updateUI(); return Promise.resolve(); }
+        state.cagnotte += Math.abs(pick.delta);
+        return payAmount(p, Math.abs(pick.delta), null, ev.title);
+      }
+
+      playSound("warn");
+      return new Promise(resolve => {
+        const modalBox = document.getElementById("game-modal-box");
+        modalBox.classList.add("event-alert");
+
+        const optsHtml = shuffled.map((ch, idx) =>
+          `<button class="quiz-opt" id="evopt-${idx}" onclick="chooseUnexpected(${idx})">${idx + 1}. ${ch.label}</button>`
+        ).join("");
+
+        openGameModal(
+          `⚠️ Événement Inattendu : ${ev.title}`,
+          `
+            <p style="font-weight:600; margin-bottom:10px;">${ev.scenario}</p>
+            <div class="quiz-options">${optsHtml}</div>
+            <div id="event-feedback" style="margin-top:12px; display:none; padding:12px; border-radius:16px; border:1px solid;"></div>
+          `,
+          [],
+          false
+        );
+
+        window.chooseUnexpected = (idx) => {
+          document.querySelectorAll(".quiz-opt").forEach(b => b.disabled = true);
+          shuffled.forEach((c, i) => {
+            const btn = document.getElementById(`evopt-${i}`);
+            if (c.quality === "good") btn.classList.add("correct");
+            else if (c.quality === "mixed") btn.classList.add("mixed");
+            else btn.classList.add("wrong");
+          });
+
+          const chosen = shuffled[idx];
+          const fb = document.getElementById("event-feedback");
+          fb.style.display = "block";
+
+          if (chosen.quality === "good") {
+            playSound("good");
+            fb.style.borderColor = "var(--mint)"; fb.style.background = "rgba(52, 211, 153, 0.16)";
+            fb.innerHTML = `<strong style="color:var(--mint);">🟢 BON CHOIX (+${chosen.delta} ✨)</strong><br/>${chosen.feedback}`;
+            p.balance += chosen.delta;
+            setLastAction(`⚠️ <strong>${p.name}</strong> : 🟢 Bon choix (+${chosen.delta} ✨) !`);
+          } else if (chosen.quality === "mixed") {
+            playSound("warn");
+            fb.style.borderColor = "var(--amber)"; fb.style.background = "rgba(251, 191, 36, 0.16)";
+            fb.innerHTML = `<strong style="color:var(--amber);">🟡 CHOIX MITIGÉ (+${chosen.delta} ✨)</strong><br/>${chosen.feedback}`;
+            p.balance += chosen.delta;
+            setLastAction(`⚠️ <strong>${p.name}</strong> : 🟡 Choix mitigé (+${chosen.delta} ✨).`);
+          } else {
+            playSound("bad");
+            fb.style.borderColor = "var(--danger)"; fb.style.background = "rgba(244, 63, 94, 0.18)";
+            fb.innerHTML = `<strong style="color:#fecdd3;">🔴 MAUVAIS CHOIX (${chosen.delta} ✨)</strong><br/>${chosen.feedback}`;
+            setLastAction(`⚠️ <strong>${p.name}</strong> : 🔴 Mauvais choix (${chosen.delta} ✨).`);
+          }
+          updateUI();
+
+          const actions = document.getElementById("game-modal-actions");
+          const cont = document.createElement("button");
+          cont.className = "btn-primary";
+          cont.textContent = "Continuer";
+          cont.onclick = async () => {
+            closeGameModal();
+            if (chosen.quality === "good") updateStreak(p, true);
+            else if (chosen.quality === "bad") updateStreak(p, false);
+
+            if (chosen.delta < 0) {
+              state.cagnotte += Math.abs(chosen.delta);
+              await payAmount(p, Math.abs(chosen.delta), null, ev.title);
+            }
+            resolve();
+          };
+          actions.appendChild(cont);
+        };
+      });
+    }
+
+    /* ============================================================
+       MINI-JEU MODÈRE LE TCHAT (10s)
+    ============================================================ */
+    function runModerationMiniGame(p, sid) {
+      if (p.isBot) {
+        const gain = [50, 75, 100][Math.floor(Math.random() * 3)];
+        p.balance += gain;
+        setLastAction(`🎮 <strong>${p.name}</strong> modère le tchat : <strong>+${gain} ✨</strong> !`);
+        updateUI();
+        return Promise.resolve();
+      }
+
+      playSound("good");
+      return new Promise(resolve => {
+        let score = 0;
+        let timeLeft = 100;
+        let idx = 0;
+        const pool = [...MODERATION_MESSAGES].sort(() => Math.random() - 0.5);
+
+        openGameModal(
+          "🎮 Modère le Tchat !",
+          `
+            <p style="font-size:0.9rem; color:var(--muted);">
+              Clique vite sur les <strong>messages méchants/harcelants</strong> (<strong>+25 ✨</strong>).
+              Évite les messages sympas (<strong>-15 ✨</strong>) !
+            </p>
+            <div style="display:flex;justify-content:space-between;margin-top:8px;">
+              <strong style="color:var(--amber);">⏱️ <span id="mg-time">10.0s</span></strong>
+              <strong style="color:var(--mint);">Gagné : <span id="mg-score">0</span> ✨</strong>
+            </div>
+            <div class="minigame-timer-wrap"><div class="minigame-timer-bar" id="mg-bar"></div></div>
+            <div class="chat-stream" id="mg-stream"></div>
+          `,
+          [],
+          false
+        );
+
+        const stream = document.getElementById("mg-stream");
+        const scoreEl = document.getElementById("mg-score");
+        const timeEl = document.getElementById("mg-time");
+        const barEl = document.getElementById("mg-bar");
+
+        const spawn = () => {
+          if (sid !== state.sessionId) return;
+          const item = pool[idx % pool.length];
+          idx++;
+          const btn = document.createElement("button");
+          btn.className = "chat-msg-btn";
+          btn.innerHTML = `<span>💬 ${item.text}</span><span style="font-size:0.75rem;color:var(--muted);">Supprimer ?</span>`;
+          btn.onclick = () => {
+            btn.disabled = true;
+            if (item.toxic) {
+              score += 25; btn.classList.add("hit-good");
+              btn.querySelector("span:last-child").textContent = "✅ +25 ✨";
+              playSound("buy");
+            } else {
+              score = Math.max(0, score - 15); btn.classList.add("hit-bad");
+              btn.querySelector("span:last-child").textContent = "❌ -15 ✨";
+              playSound("bad");
+            }
+            scoreEl.textContent = score;
+          };
+          stream.prepend(btn);
+        };
+
+        spawn();
+        const spawner = setInterval(spawn, 950);
+        const timer = setInterval(() => {
+          if (sid !== state.sessionId) {
+            clearInterval(timer); clearInterval(spawner);
+            resolve();
+            return;
+          }
+          timeLeft--;
+          timeEl.textContent = (timeLeft / 10).toFixed(1) + "s";
+          barEl.style.width = timeLeft + "%";
+          if (timeLeft <= 0) {
+            clearInterval(timer); clearInterval(spawner);
+            stream.querySelectorAll("button").forEach(b => b.disabled = true);
+            p.balance += score;
+            playSound(score > 0 ? "good" : "warn");
+            setLastAction(`🎮 <strong>${p.name}</strong> gagne <strong>+${score} ✨</strong> en modérant le tchat !`);
+            updateUI();
+
+            const actions = document.getElementById("game-modal-actions");
+            const btn = document.createElement("button");
+            btn.className = "btn-success";
+            btn.textContent = `Prendre +${score} ✨`;
+            btn.onclick = () => {
+              closeGameModal();
+              if (score >= 75) updateStreak(p, true);
+              resolve();
+            };
+            actions.appendChild(btn);
+          }
+        }, 100);
+        activeIntervals.push(spawner, timer);
+      });
+    }
+
+    /* ============================================================
+       QUIZ EXPRESS
+    ============================================================ */
+    function resolveQuizTile(p, sid) {
+      const qObj = QUIZ_QUESTIONS[Math.floor(Math.random() * QUIZ_QUESTIONS.length)];
+
+      if (p.isBot) {
+        if (Math.random() < 0.7) { p.balance += 100; setLastAction(`🧠 <strong>${p.name}</strong> réussit le Quiz (+100 ✨).`); }
+        else setLastAction(`🧠 <strong>${p.name}</strong> rate le Quiz.`);
+        return Promise.resolve();
+      }
+
+      return new Promise(resolve => {
+        const optsHtml = qObj.opts.map((opt, idx) =>
+          `<button class="quiz-opt" id="qopt-${idx}" onclick="answerQuiz(${idx})">${opt}</button>`
+        ).join("");
+
+        openGameModal(
+          "🧠 Quiz Express (+100 ✨)",
+          `
+            <p style="font-weight:700; margin-bottom:10px;">${qObj.q}</p>
+            <div class="quiz-options">${optsHtml}</div>
+            <div id="quiz-feedback" style="margin-top:12px; display:none; padding:12px; border-radius:16px; border:1px solid;"></div>
+          `,
+          [],
+          false
+        );
+
+        window.answerQuiz = (chosen) => {
+          document.querySelectorAll(".quiz-opt").forEach(b => b.disabled = true);
+          const fb = document.getElementById("quiz-feedback");
+          fb.style.display = "block";
+          const right = chosen === qObj.ans;
+
+          if (right) {
+            playSound("good");
+            document.getElementById(`qopt-${chosen}`).classList.add("correct");
+            fb.style.borderColor = "var(--mint)"; fb.style.background = "rgba(52, 211, 153, 0.16)";
+            fb.innerHTML = `<strong style="color:var(--mint);">✅ Bravo ! (+100 ✨)</strong><br/>${qObj.exp}`;
+            p.balance += 100;
+            setLastAction(`🧠 <strong>${p.name}</strong> réussit le Quiz : <strong>+100 ✨</strong> !`);
+          } else {
+            playSound("bad");
+            document.getElementById(`qopt-${chosen}`).classList.add("wrong");
+            document.getElementById(`qopt-${qObj.ans}`).classList.add("correct");
+            fb.style.borderColor = "var(--danger)"; fb.style.background = "rgba(244, 63, 94, 0.16)";
+            fb.innerHTML = `<strong style="color:#fecdd3;">❌ Raté...</strong><br/>${qObj.exp}`;
+            setLastAction(`🧠 <strong>${p.name}</strong> découvre une règle au Quiz.`);
+          }
+          updateUI();
+
+          const actions = document.getElementById("game-modal-actions");
+          const cont = document.createElement("button");
+          cont.className = "btn-primary";
+          cont.textContent = "Continuer";
+          cont.onclick = () => { closeGameModal(); updateStreak(p, right); resolve(); };
+          actions.appendChild(cont);
+        };
+      });
+    }
+
+    /* ============================================================
+       COMPTE ISOLÉ, BOUCLIERS & DETTES
+    ============================================================ */
+    function openJailOptionsModal(p) {
+      const sid = state.sessionId;
+      const actions = [
+        { label: "🎲 Tenter un Double", cls: "btn-primary", onClick: async () => { closeGameModal(); await rollDiceAndMove(p, sid); } }
+      ];
+      if (p.balance >= 50) {
+        actions.push({
+          label: "🕊️ Payer 50 ✨ (Médiation)", cls: "btn-warning",
+          onClick: async () => {
+            closeGameModal(); p.balance -= 50; p.inJail = false; p.jailTurns = 0;
+            setLastAction(`🕊️ <strong>${p.name}</strong> paie 50 ✨ et sort d'isolement !`);
+            await rollDiceAndMove(p, sid);
+          }
+        });
+      }
+      openGameModal(
+        "🔒 Compte Isolé",
+        `Ton compte est en pause (${p.jailTurns + 1}/2). Fais un <strong>double</strong> aux dés, ou paie <strong>50 ✨</strong> pour sortir.`,
+        actions,
+        true
+      );
+    }
+
+    function openManageModal() {
+      const p = currentPlayer();
+      if (!p || p.isBot || state.busy) return;
+
+      const myProps = state.tiles.filter(t => t.owner === p.id && t.type === "prop");
+      if (myProps.length === 0) {
+        openInfoModal("Boucliers 🛡️", "Tu ne possèdes encore aucun espace où poser des Boucliers ! Achètes-en en tombant dessus.", [{ label: "OK", cls: "btn-primary", onClick: closeInfoModal }]);
+        return;
+      }
+
+      const renderRows = () => myProps.map(t => {
+        const g = COLOR_MAP[t.group];
+        const canAdd = t.shields < 3 && p.balance >= g.shieldCost;
+        return `
+          <div class="manage-row">
+            <div>
+              <strong style="color:${g.hex};">●</strong> <strong>${t.name}</strong><br/>
+              <span style="font-size:0.8rem; color:var(--muted);">
+                ${t.shields === 0 ? "Aucun bouclier" : "🛡️".repeat(t.shields)} (${t.shields}/3) • Loyer : ${calculateRent(t)} ✨
+              </span>
+            </div>
+            <button class="btn-success" style="padding:7px 14px; font-size:0.8rem;" ${canAdd ? "" : "disabled"} onclick="addShield(${t.id})">
+              ${t.shields >= 3 ? "Max ✓" : `+1 🛡️ (${g.shieldCost} ✨)`}
+            </button>
+          </div>
+        `;
+      }).join("");
+
+      openGameModal(
+        `🛡️ Poser des Boucliers (${p.balance} ✨)`,
+        `<p style="font-size:0.86rem; color:var(--muted); margin-bottom:10px;">
+          Ajoute jusqu'à <strong>3 Boucliers 🛡️</strong> sur tes espaces pour augmenter ce que les autres te paient !
+        </p>
+        <div id="shields-list">${renderRows()}</div>`,
+        [{ label: "Fermer", cls: "btn-primary", onClick: closeGameModal }],
+        true
+      );
+
+      window.refreshShields = () => {
+        document.getElementById("game-modal-title").textContent = `🛡️ Poser des Boucliers (${p.balance} ✨)`;
+        document.getElementById("shields-list").innerHTML = renderRows();
+      };
+    }
+
+    function addShield(tileId) {
+      const p = currentPlayer();
+      const t = state.tiles[tileId];
+      const cost = COLOR_MAP[t.group].shieldCost;
+      if (p.balance < cost || t.shields >= 3) return;
+      p.balance -= cost; t.shields++;
+      playSound("buy");
+      setLastAction(`🛡️ <strong>${p.name}</strong> pose un Bouclier sur <strong>${t.name}</strong> !`);
+      updateUI();
+      if (window.refreshShields) window.refreshShields();
+    }
+
+    async function payAmount(payer, amount, recipient, reason) {
+      payer.balance -= amount;
+      if (recipient) recipient.balance += amount;
+      updateUI();
+
+      if (payer.balance < 0) {
+        if (payer.isBot) {
+          botRecover(payer);
+          if (payer.balance < 0) declareBankruptcy(payer, recipient);
+        } else {
+          await openDebtModal(payer, recipient, reason);
+        }
+      }
+      checkWinCondition();
+    }
+
+    function botRecover(p) {
+      while (p.balance < 0) {
+        const tShield = state.tiles.find(t => t.owner === p.id && t.shields > 0);
+        if (tShield) {
+          tShield.shields--;
+          p.balance += Math.round(COLOR_MAP[tShield.group].shieldCost / 2);
+          continue;
+        }
+        const tProp = state.tiles.find(t => t.owner === p.id);
+        if (tProp) {
+          tProp.owner = null;
+          p.balance += Math.round(tProp.price / 2);
+          continue;
+        }
+        break;
+      }
+    }
+
+    function openDebtModal(p, recipient, reason) {
+      return new Promise(resolve => {
+        const renderDebt = () => {
+          const myTiles = state.tiles.filter(t => t.owner === p.id);
+          const rows = myTiles.map(t => {
+            const sellGain = t.shields > 0 ? Math.round(COLOR_MAP[t.group].shieldCost / 2) : Math.round(t.price / 2);
+            return `
+              <div class="manage-row">
+                <div><strong>${t.name}</strong><br/><span style="font-size:0.78rem;color:var(--muted);">${t.shields > 0 ? "Vendre 1 bouclier" : "Revendre l'espace"}</span></div>
+                <button class="btn-warning" style="padding:7px 12px;font-size:0.8rem;" onclick="sellAssetForDebt(${t.id})">+${sellGain} ✨</button>
+              </div>
+            `;
+          }).join("");
+
+          const ok = p.balance >= 0;
+          openGameModal(
+            "🚨 Plus assez de Sérénité !",
+            `
+              <p>Motif : <strong>${reason}</strong></p>
+              <p style="margin:8px 0;">Solde : <strong style="color:${ok ? 'var(--mint)' : 'var(--danger)'};">${p.balance} ✨</strong></p>
+              <div>${rows || "<em>Tu n'as plus rien à revendre.</em>"}</div>
+            `,
+            ok
+              ? [{ label: "✅ C'est réglé !", cls: "btn-success", onClick: () => { closeGameModal(); resolve(); } }]
+              : [{ label: "🏳️ Quitter la partie", cls: "btn-danger", onClick: () => { closeGameModal(); declareBankruptcy(p, recipient); resolve(); } }],
+            false
+          );
+        };
+
+        window.sellAssetForDebt = (tileId) => {
+          const t = state.tiles[tileId];
+          if (t.shields > 0) {
+            t.shields--;
+            p.balance += Math.round(COLOR_MAP[t.group].shieldCost / 2);
+          } else {
+            t.owner = null;
+            p.balance += Math.round(t.price / 2);
+          }
+          updateUI();
+          renderDebt();
+        };
+
+        renderDebt();
+      });
+    }
+
+    function declareBankruptcy(p, creditor) {
+      p.bankrupt = true; p.balance = 0;
+      playSound("bad");
+      showToast(`💀 ${p.name} est éliminé !`);
+      setLastAction(`💀 <strong>${p.name}</strong> quitte la partie.`);
+
+      state.tiles.forEach(t => {
+        if (t.owner === p.id) {
+          t.shields = 0;
+          t.owner = (creditor && !creditor.bankrupt) ? creditor.id : null;
+        }
+      });
+      updateUI();
+      checkWinCondition();
+    }
+
+    function checkWinCondition() {
+      if (state.gameOver) return;
+      const alive = state.players.filter(p => !p.bankrupt);
+      const richWinner = alive.find(p => p.balance >= WIN_GOAL);
+
+      if (alive.length === 1 || richWinner) {
+        state.gameOver = true;
+        state.busy = false;
+        const winner = richWinner || alive[0];
+        playSound("win");
+        launchConfetti();
+        openGameModal(
+          `🏆 ${winner.avatar} ${winner.name} a gagné !`,
+          `
+            <p>${richWinner ? `Incroyable ! <strong>${winner.name}</strong> atteint l'objectif des <strong>2 500 ✨</strong> !` : `<strong>${winner.name}</strong> est le dernier joueur en jeu avec <strong>${winner.balance} ✨</strong> !`}</p>
+            <p style="margin-top:10px; color:var(--sky); font-size:0.9rem;">
+              Rappel important : si toi ou un ami subissez du cyberharcèlement, appelle gratuitement et anonymement le <strong>3018</strong>.
+            </p>
+          `,
+          [
+            { label: "🔄 Rejouer", cls: "btn-primary", onClick: () => {
+              closeGameModal();
+              document.getElementById("game-screen").classList.remove("active");
+              document.getElementById("setup-screen").style.display = "block";
+              document.getElementById("btn-restart").style.display = "none";
+            }}
+          ],
+          false
+        );
+      }
+    }
+
+    /* ============================================================
+       TOUR SUIVANT & IA (AVEC GESTION DES DOUBLES)
+    ============================================================ */
+    async function endTurn() {
+      if (state.busy || state.gameOver) return;
+      const sid = state.sessionId;
+      state.hasRolled = false;
+      diceState.doublesStreak = 0;
+      state.turnCount++;
+
+      let next = (state.currentIdx + 1) % state.players.length;
+      let guard = 0;
+      while (state.players[next].bankrupt && guard < state.players.length) {
+        next = (next + 1) % state.players.length;
+        guard++;
+      }
+      state.currentIdx = next;
+      rotateTip();
+      updateUI();
+
+      const cp = currentPlayer();
+      if (!cp || cp.bankrupt) { checkWinCondition(); return; }
+
+      if (cp.isBot && !state.gameOver) {
+        setTimeout(() => runBotTurn(sid), 750);
+      } else if (!cp.isBot && !cp.inJail && state.turnCount >= 3 && Math.random() < 0.25 && !state.gameOver) {
+        state.busy = true;
+        updateUI();
+        try {
+          await sleep(300);
+          if (sid !== state.sessionId) return;
+          if (Math.random() < 0.45) await runPhoneMiniGame(cp, sid);
+          else await triggerUnexpectedEvent(cp, sid);
+        } finally {
+          if (sid === state.sessionId) {
+            state.busy = false;
+            updateUI();
+          }
+        }
+      }
+    }
+
+    async function runBotTurn(sid) {
+      if (sid !== state.sessionId || state.gameOver) return;
+      const bot = currentPlayer();
+      if (!bot || !bot.isBot || bot.bankrupt) {
+        if (!state.gameOver && sid === state.sessionId) endTurn();
+        return;
+      }
+
+      if (bot.inJail && bot.balance > 250) {
+        bot.balance -= 50; bot.inJail = false; bot.jailTurns = 0;
+        setLastAction(`🕊️ <strong>${bot.name}</strong> paie 50 ✨ pour sortir d'isolement.`);
+        await sleep(550);
+        if (sid !== state.sessionId) return;
+      }
+
+      while (!state.hasRolled && !bot.bankrupt && !state.gameOver && sid === state.sessionId) {
+        await rollDiceAndMove(bot, sid);
+        if (sid !== state.sessionId || state.gameOver) return;
+        await sleep(700);
+      }
+
+      if (sid !== state.sessionId || state.gameOver) return;
+
+      if (!bot.bankrupt) {
+        const candidate = state.tiles.find(t => t.owner === bot.id && t.type === "prop" && t.shields < 3 && bot.balance >= COLOR_MAP[t.group].shieldCost + 140);
+        if (candidate) {
+          bot.balance -= COLOR_MAP[candidate.group].shieldCost;
+          candidate.shields++;
+          playSound("buy");
+          setLastAction(`🤖🛡️ <strong>${bot.name}</strong> pose un Bouclier sur ${candidate.name}.`);
+          updateUI();
+          await sleep(500);
+          if (sid !== state.sessionId) return;
+        }
+      }
+
+      if (!state.gameOver && sid === state.sessionId) {
+        endTurn();
+      }
+    }
+
+    /* ============================================================
+       INSPECTION CASE & AIDE 3018
+    ============================================================ */
+    function inspectTile(id) {
+      const t = state.tiles[id];
+      const ownerName = t.owner !== null ? `${state.players[t.owner].avatar} ${state.players[t.owner].name}` : "Personne (à vendre)";
+      let details = `<p>${t.desc}</p>`;
+
+      if (t.type === "prop") {
+        const g = COLOR_MAP[t.group];
+        details += `
+          <div style="margin-top:10px;padding:12px;background:rgba(255,255,255,0.06);border-radius:16px;border-left:4px solid ${g.hex};">
+            <strong>Prix :</strong> ${t.price} ✨ | <strong>Appartient à :</strong> ${ownerName}<br/>
+            <strong>Boucliers :</strong> ${t.shields === 0 ? "Aucun" : "🛡️".repeat(t.shields)}
+          </div>
+          <table class="rent-table">
+            <tr><td>Sans bouclier</td><td>${t.rents[0]} ✨</td></tr>
+            <tr><td>1 Bouclier 🛡️</td><td>${t.rents[1]} ✨</td></tr>
+            <tr><td>2 Boucliers 🛡️🛡️</td><td>${t.rents[2]} ✨</td></tr>
+            <tr><td>3 Boucliers 🛡️🛡️🛡️</td><td>${t.rents[3]} ✨</td></tr>
+          </table>
+        `;
+      } else if (t.type === "service") {
+        details += `
+          <div style="margin-top:10px;padding:12px;background:rgba(255,255,255,0.06);border-radius:16px;">
+            <strong>Prix :</strong> ${t.price} ✨ | <strong>Appartient à :</strong> ${ownerName}<br/>
+            <strong>Loyer :</strong> 50 ✨ (ou 100 ✨ si tu as les 2 services d'aide).
+          </div>
+        `;
+      }
+      openInfoModal(`${t.icon} ${t.name}`, details, [{ label: "Fermer", cls: "btn-primary", onClick: closeInfoModal }]);
+    }
+
+    function openHelpModal() {
+      openInfoModal(
+        "📞 Besoin d'aide ? & Règles",
+        `
+          <div style="background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.4);padding:14px;border-radius:18px;margin-bottom:14px;">
+            <strong style="color:var(--amber);">Si tu subis ou vois du cyberharcèlement :</strong><br/>
+            • <strong>3018</strong> : gratuit, anonyme et secret (7j/7 de 9h à 23h, téléphone ou appli 3018).<br/>
+            • <strong>119</strong> : Enfance en danger (24h/24) • <strong>17</strong> : Police / Urgence.<br/>
+            • <strong>PHAROS</strong> : <em>internet-signalement.gouv.fr</em> pour signaler les menaces.
+          </div>
+          <strong>Comment jouer :</strong>
+          <ul style="margin-left:18px; margin-top:6px; font-size:0.9rem; line-height:1.55;">
+            <li>Départ avec <strong>1 200 ✨</strong>. Premier à <strong>2 500 ✨</strong> (ou dernier joueur en jeu) gagne !</li>
+            <li>Lance les <strong>2 dés</strong> : un <strong>Double</strong> donne +30 ✨ et te fait rejouer (3 doubles de suite = Compte Isolé).</li>
+            <li>Achète des espaces et pose jusqu'à <strong>3 Boucliers 🛡️</strong> dessus.</li>
+            <li>Réponds bien sur le <strong>📱 Téléphone</strong>, dans les <strong>⚠️ 6 cases Inattendu !</strong> (32 scénarios) et les <strong>🧠 Quiz</strong> : <strong>3 bons réflexes d'affilée = +150 ✨</strong> !</li>
+          </ul>
+        `,
+        [{ label: "Compris !", cls: "btn-primary", onClick: closeInfoModal }]
+      );
+    }
+
+    /* ============================================================
+       GESTION DES 2 MODALES INDÉPENDANTES
+    ============================================================ */
+    function openGameModal(title, bodyHtml, buttons = [], closable = true) {
+      document.getElementById("game-modal-title").innerHTML = title;
+      document.getElementById("game-modal-body").innerHTML = bodyHtml;
+      document.getElementById("game-modal-close-x").style.display = closable ? "inline-block" : "none";
+
+      const actions = document.getElementById("game-modal-actions");
+      actions.innerHTML = "";
+      buttons.forEach(b => {
+        const btn = document.createElement("button");
+        btn.className = b.cls || "btn-primary";
+        btn.textContent = b.label;
+        btn.onclick = b.onClick;
+        actions.appendChild(btn);
+      });
+      document.getElementById("game-modal-backdrop").classList.add("open");
+    }
+
+    function closeGameModal() {
+      const box = document.getElementById("game-modal-box");
+      box.classList.remove("event-alert", "phone-mode");
+      document.getElementById("game-modal-backdrop").classList.remove("open");
+      window.refreshShields = null;
+    }
+
+    function openInfoModal(title, bodyHtml, buttons = []) {
+      document.getElementById("info-modal-title").innerHTML = title;
+      document.getElementById("info-modal-body").innerHTML = bodyHtml;
+      const actions = document.getElementById("info-modal-actions");
+      actions.innerHTML = "";
+      buttons.forEach(b => {
+        const btn = document.createElement("button");
+        btn.className = b.cls || "btn-primary";
+        btn.textContent = b.label;
+        btn.onclick = b.onClick;
+        actions.appendChild(btn);
+      });
+      document.getElementById("info-modal-backdrop").classList.add("open");
+    }
+
+    function closeInfoModal() {
+      document.getElementById("info-modal-backdrop").classList.remove("open");
+    }
+
+    function showSimpleAlert(title, html) {
+      return new Promise(resolve => {
+        openGameModal(title, html, [{ label: "OK", cls: "btn-primary", onClick: () => { closeGameModal(); resolve(); } }], false);
+      });
+    }
+
+    renderSetupPlayers();
+  </script>
+</body>
+</html>
